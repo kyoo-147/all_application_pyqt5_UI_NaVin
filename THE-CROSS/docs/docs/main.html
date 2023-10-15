@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main module &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Client module" href="Client.html" />
+    <link rel="prev" title="Welcome to THE-CROSS’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>main module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/main.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-main">
+<span id="main-module"></span><h1>main module<a class="headerlink" href="#module-main" title="Permalink to this headline"></a></h1>
+<p>THE-CROSS : A Smart Traffic Control System for the protection of
+the socially disadvantaged and rapid transport of emergency vehicles.</p>
+<p>Copyright (C) 2021 THE-CROSS authors</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program. If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="main.Main">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">Main</span></span><a class="reference internal" href="../_modules/main.html#Main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p>This class is actually a central class for using client programs.
+All functions work around this class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.Change_CarTime_Button_Event">
+<span class="sig-name descname"><span class="pre">Change_CarTime_Button_Event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.Change_CarTime_Button_Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.Change_CarTime_Button_Event" title="Permalink to this definition"></a></dt>
+<dd><p>This is a function that is called when the user clicks
+the Change to Vehicle Driving Signal button on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.Change_CrosswalkTime_Button_Event">
+<span class="sig-name descname"><span class="pre">Change_CrosswalkTime_Button_Event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.Change_CrosswalkTime_Button_Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.Change_CrosswalkTime_Button_Event" title="Permalink to this definition"></a></dt>
+<dd><p>It is a function that is called when the user clicks the Change to pedestrian signal button on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.Left_Camera_Carlane_Button_Event">
+<span class="sig-name descname"><span class="pre">Left_Camera_Carlane_Button_Event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.Left_Camera_Carlane_Button_Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.Left_Camera_Carlane_Button_Event" title="Permalink to this definition"></a></dt>
+<dd><p>This is an event function that is called when the user clicks
+the reset left camera vehicle zone button on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.Left_Camera_Crosswalk_Button_Event">
+<span class="sig-name descname"><span class="pre">Left_Camera_Crosswalk_Button_Event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.Left_Camera_Crosswalk_Button_Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.Left_Camera_Crosswalk_Button_Event" title="Permalink to this definition"></a></dt>
+<dd><p>This is an event function that is called when the user clicks
+the reset left camera crosswalk area button on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.Right_Camera_Carlane_Button_Event">
+<span class="sig-name descname"><span class="pre">Right_Camera_Carlane_Button_Event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.Right_Camera_Carlane_Button_Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.Right_Camera_Carlane_Button_Event" title="Permalink to this definition"></a></dt>
+<dd><p>This is an event function that is called when the user clicks
+the reset right camera vehicle zone button on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.Right_Camera_Crosswalk_Button_Event">
+<span class="sig-name descname"><span class="pre">Right_Camera_Crosswalk_Button_Event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.Right_Camera_Crosswalk_Button_Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.Right_Camera_Crosswalk_Button_Event" title="Permalink to this definition"></a></dt>
+<dd><p>This is an event function that is called when the user clicks
+the reset right camera crosswalk area button on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.TimerMethod">
+<span class="sig-name descname"><span class="pre">TimerMethod</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.TimerMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.TimerMethod" title="Permalink to this definition"></a></dt>
+<dd><p>This function manages the actual traffic light time and outputs signals according to emergencies.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.carlane_TurnGreen_Off">
+<span class="sig-name descname"><span class="pre">carlane_TurnGreen_Off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.carlane_TurnGreen_Off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.carlane_TurnGreen_Off" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns off the GUI’s vehicle green signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.carlane_TurnGreen_On">
+<span class="sig-name descname"><span class="pre">carlane_TurnGreen_On</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.carlane_TurnGreen_On"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.carlane_TurnGreen_On" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns on the GUI’s vehicle green signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.carlane_TurnRed_Off">
+<span class="sig-name descname"><span class="pre">carlane_TurnRed_Off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.carlane_TurnRed_Off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.carlane_TurnRed_Off" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns off the GUI’s vehicle red signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.carlane_TurnRed_On">
+<span class="sig-name descname"><span class="pre">carlane_TurnRed_On</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.carlane_TurnRed_On"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.carlane_TurnRed_On" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns on the GUI’s vehicle red signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.carlane_TurnYellow_Off">
+<span class="sig-name descname"><span class="pre">carlane_TurnYellow_Off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.carlane_TurnYellow_Off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.carlane_TurnYellow_Off" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns of the GUI’s vehicle yellow signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.carlane_TurnYellow_On">
+<span class="sig-name descname"><span class="pre">carlane_TurnYellow_On</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.carlane_TurnYellow_On"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.carlane_TurnYellow_On" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns on the GUI’s vehicle yellow signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.changeTimer">
+<span class="sig-name descname"><span class="pre">changeTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.changeTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.changeTimer" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that changes the traffic light time displayed on the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PyQt5.QtGui.QCloseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.closeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This function is an event function that occurs when the exit button is clicked in the GUI,
+allowing the client program to end safely.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.confirmButtonClicked">
+<span class="sig-name descname"><span class="pre">confirmButtonClicked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.confirmButtonClicked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.confirmButtonClicked" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function called to store the program settings that the user has changed on the GUI.
+This function allows the user’s changed program setting value to be stored in the config.json file on the GUI,
+so that the user’s changed program setting value on the GUI
+can be applied directly to the currently operating program.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It may take up to one cycle of traffic light before the program setting value changed by the user is applied on the GUI. This varies depending on the current traffic light signal status.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.crosswalk_TurnGreen_Off">
+<span class="sig-name descname"><span class="pre">crosswalk_TurnGreen_Off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.crosswalk_TurnGreen_Off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.crosswalk_TurnGreen_Off" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns off the pedestrian green signal in the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.crosswalk_TurnGreen_On">
+<span class="sig-name descname"><span class="pre">crosswalk_TurnGreen_On</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.crosswalk_TurnGreen_On"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.crosswalk_TurnGreen_On" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns on the pedestrian green signal in the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.crosswalk_TurnRed_Off">
+<span class="sig-name descname"><span class="pre">crosswalk_TurnRed_Off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.crosswalk_TurnRed_Off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.crosswalk_TurnRed_Off" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns off the pedestrian red signal in the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.crosswalk_TurnRed_On">
+<span class="sig-name descname"><span class="pre">crosswalk_TurnRed_On</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.crosswalk_TurnRed_On"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.crosswalk_TurnRed_On" title="Permalink to this definition"></a></dt>
+<dd><p>This function turns on the pedestrian red signal in the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.initUI">
+<span class="sig-name descname"><span class="pre">initUI</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.initUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.initUI" title="Permalink to this definition"></a></dt>
+<dd><p>This function is for GUI activation. It is also a function that actually starts the program.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.preparingCamera">
+<span class="sig-name descname"><span class="pre">preparingCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.preparingCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.preparingCamera" title="Permalink to this definition"></a></dt>
+<dd><p>This function stops the output of two real-time images displayed on the GUI,
+allowing the user to adjust the camera.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.processing">
+<span class="sig-name descname"><span class="pre">processing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgLeft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imgRight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_left_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_right_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.processing" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that receives an image from a camera, receives an object detection result,
+and determines whether to adjust the signal or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>imgLeft</strong> (<em>3D-ndarray</em>) – 3D ndarray type variable, which has left image data.</p></li>
+<li><p><strong>imgRight</strong> (<em>3D-ndarray</em>) – 3D ndarray type variable, which has right image data.</p></li>
+<li><p><strong>left_pos</strong> (<em>2D-list</em>) – A list of coordinates of the detected person in left image.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>left_pos must have the form of [[xmin, ymax, xmax, ymin], [..], ..]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>right_pos</strong> (<em>2D-list</em>) – A list of coordinates of the detected person in right image.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>right_pos must have the form of [[xmin, ymax, xmax, ymin], [..], ..]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>custom_left_pos</strong> (<em>3D-list</em>) – A list of coordinates of the detected objects in left image.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>custom_left_pos must have the form of [ [ [xmin, ymax, xmax, ymin], [..], .. ], [..], .. ]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>custom_right_pos</strong> (<em>3D-list</em>) – A list of coordinates of the detected objects in right image.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>custom_right_pos must have the form of [ [ [xmin, ymax, xmax, ymin], [..], .. ], [..], .. ]</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.refreshCamera">
+<span class="sig-name descname"><span class="pre">refreshCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.refreshCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.refreshCamera" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that brings back the camera’s set value,
+resets the camera, and allows the camera to work again.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.startCarlane">
+<span class="sig-name descname"><span class="pre">startCarlane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.startCarlane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.startCarlane" title="Permalink to this definition"></a></dt>
+<dd><p>This function actually changes the signal to pedestrian time and reflects it in the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.startCrosswalk">
+<span class="sig-name descname"><span class="pre">startCrosswalk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.startCrosswalk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.startCrosswalk" title="Permalink to this definition"></a></dt>
+<dd><p>This function actually changes the signal to the vehicle driving time and reflects it in the GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.startSirenDetector">
+<span class="sig-name descname"><span class="pre">startSirenDetector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.startSirenDetector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.startSirenDetector" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that activates the SirenDetector
+to detect the siren sound of an emergency vehicle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.start_Timer">
+<span class="sig-name descname"><span class="pre">start_Timer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.start_Timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.start_Timer" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that starts the traffic light timer process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.stopCamera">
+<span class="sig-name descname"><span class="pre">stopCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.stopCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.stopCamera" title="Permalink to this definition"></a></dt>
+<dd><p>This function stops VideoThread instance from delivering real-time images to MainClass,
+stops real-time images output on the GUI,
+and actually stops the camera.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.stopSirenDetector">
+<span class="sig-name descname"><span class="pre">stopSirenDetector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.stopSirenDetector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.stopSirenDetector" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that stops the SirenDetector to detect the siren sound of an emergency vehicle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.Main.stop_Timer">
+<span class="sig-name descname"><span class="pre">stop_Timer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#Main.stop_Timer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.Main.stop_Timer" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that stops the traffic light timer process.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.start">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">IP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PORT</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/main.html#start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.start" title="Permalink to this definition"></a></dt>
+<dd><p>This function is called from Client.py to run a client program.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to THE-CROSS’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Client.html" class="btn btn-neutral float-right" title="Client module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

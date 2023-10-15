@@ -1,0 +1,10 @@
+.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_1.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_2.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_3.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_4.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_5.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_6.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_7.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_8.csv filter=lfs diff=lfs merge=lfs -text
+data/model/model_9.csv filter=lfs diff=lfs merge=lfs -text

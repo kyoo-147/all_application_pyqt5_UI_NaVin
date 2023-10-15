@@ -1,0 +1,20 @@
+certifi==2020.12.5
+click==7.1.2
+cmake==3.18.4.post1
+dlib==19.21.1
+face-recognition==1.3.0
+face-recognition-models==0.3.0
+mkl-fft==1.3.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+numpy==1.19.5
+Pillow==8.1.1
+PyQt5==5.15.2
+pyqt5-plugins==5.15.2.2.0.1
+PyQt5-sip==12.8.1
+pyqt5-tools==5.15.2.3.0.2
+python-dotenv==0.15.0
+qt5-applications==5.15.2.2.1
+qt5-tools==5.15.2.1.0.1
+six @ file:///C:/ci/six_1605187303045/work
+wincertstore==0.2

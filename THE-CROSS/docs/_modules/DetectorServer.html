@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DetectorServer &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>DetectorServer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for DetectorServer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">ImageDetector</span>
+
+
+<div class="viewcode-block" id="receiveAll"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.receiveAll">[docs]</a><span class="k">def</span> <span class="nf">receiveAll</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function receives and returns all buffers transmitted from the server so far through the socket.</span>
+
+<span class="sd">    The buffer is read through the socket, but the read size is limited.</span>
+<span class="sd">    The size limit is limited by the value stored in the count variable.</span>
+
+<span class="sd">    :param socket.socket sock: A Socket variable for communicating with the server.</span>
+<span class="sd">    :param int count: A variable that stores a limit on the total read size</span>
+
+<span class="sd">    :return buffer: returns all buffers transmitted from the server</span>
+<span class="sd">    :return None: return None if There is no new Buffer</span>
+
+<span class="sd">    :raises socket.timeout: In the process of reading the buffer through the socket, when the time limit is set in the socket and exceeds the time limit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create A buffer variable to save received buffer</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+
+    <span class="c1"># Looping if count &gt;= 0</span>
+    <span class="k">while</span> <span class="n">count</span><span class="p">:</span>
+
+        <span class="c1"># receive new buffer</span>
+        <span class="n">newbuf</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+
+        <span class="c1"># if there is no new buffer</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">newbuf</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># if there is a new buffer, Save and Reduce count variable by the size input.</span>
+        <span class="n">buf</span> <span class="o">+=</span> <span class="n">newbuf</span>
+        <span class="n">count</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">newbuf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">buf</span></div>
+
+
+<div class="viewcode-block" id="DetectorServer"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.DetectorServer">[docs]</a><span class="k">class</span> <span class="nc">DetectorServer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This class is for opening a server, waiting for client access, and receiving image data from the client,</span>
+<span class="sd">    detecting an object from that image data, and sending the object detection result to the client</span>
+<span class="sd">    when the client successfully accesses the server.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A function to initialize the DetectorServer class</span>
+
+<span class="sd">        To open the server, save the server&#39;s IP address and PORT address and</span>
+<span class="sd">        open the server socket to wait for the client to access.</span>
+<span class="sd">        When the client accesses, it waits for the image to be transmitted from the client.</span>
+
+<span class="sd">        :param str ip: The IP address of the server.</span>
+<span class="sd">        :param int port: The PORT number of the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">TCP_IP</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TCP_PORT</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socketOpen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">receiveImages</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DetectorServer.socketClose"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.DetectorServer.socketClose">[docs]</a>    <span class="k">def</span> <span class="nf">socketClose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function closes the socket of the server.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Server socket [ TCP_IP: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCP_IP</span> <span class="o">+</span> <span class="s1">&#39;, TCP_PORT: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TCP_PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; ] is close&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DetectorServer.socketOpen"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.DetectorServer.socketOpen">[docs]</a>    <span class="k">def</span> <span class="nf">socketOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function opens the socket of the server and waits for the client to access.</span>
+<span class="sd">        If the client has successfully accessed the server, store the socket of the connected client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">TCP_IP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCP_PORT</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Server socket [ TCP_IP: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCP_IP</span> <span class="o">+</span> <span class="s1">&#39;, TCP_PORT: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TCP_PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; ] is open&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">addr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Server socket [ TCP_IP: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCP_IP</span> <span class="o">+</span> <span class="s1">&#39;, TCP_PORT: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TCP_PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; ] is connected with client&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DetectorServer.receiveImages"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.DetectorServer.receiveImages">[docs]</a>    <span class="k">def</span> <span class="nf">receiveImages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function waits for image data transmitted from the client. If the image data arrives successfully,</span>
+<span class="sd">        object-detection is performed from the image data and the object detection result is sent to the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Looping for receiving data from client and send object detect result (from received data ) to server</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+                <span class="c1"># Save the size of the data to be received from the client.</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="n">receiveAll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Decode information about the size of the data to be received from the client.</span>
+                <span class="n">length_decoded</span> <span class="o">=</span> <span class="n">length</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Image data is received and stored based on information on-</span>
+                <span class="c1"># -the size of the data to be received from the client.</span>
+                <span class="n">stringData</span> <span class="o">=</span> <span class="n">receiveAll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">length_decoded</span><span class="p">))</span>
+
+                <span class="c1"># decode image data using base64.b64decode function</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">stringData</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+                <span class="c1"># convert decoded image data to 3D numpy array type</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imdecode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># Save object detection result using processing function</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+                <span class="c1"># Send the object detection result to client</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sendResult</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># If a problem occurs during the communication process,</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># print error message on console window</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+            <span class="c1"># Close Server Socket to retry to connect to client</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socketClose</span><span class="p">()</span>
+
+            <span class="c1"># Re-Open Server Socket</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socketOpen</span><span class="p">()</span>
+
+            <span class="c1"># Re-Receive Image from client</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">receiveImages</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DetectorServer.processing"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.DetectorServer.processing">[docs]</a>    <span class="k">def</span> <span class="nf">processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that attempts to detect an object from the input image data,</span>
+<span class="sd">        stores and returns the result.</span>
+
+<span class="sd">        :param 3D-ndarray data: 3D ndarray type data, which has image data.</span>
+
+<span class="sd">        :returns: multi dimension list type [pos_result, custom_result]</span>
+
+<span class="sd">        .. Note:: pos_result is composed of 1D list ( [xmin, ymax, xmax, ymin] )</span>
+<span class="sd">        .. Note:: custom_result is composed of 2D list [object-classNum-1, object-classNum-2, ...]</span>
+<span class="sd">        .. Note:: object-class is 1D list that composed of 1D list ( [xmin, ymax, xmax, ymin] )</span>
+
+<span class="sd">        .. Note:: The structure of the return form is as follows.</span>
+<span class="sd">        .. Note:: [ [[xmin, ymax, xmax, ymin], ...] , [   [[xmin, ymax, xmax, ymin], ..], [..], [..], [..], ...  ] ]</span>
+
+<span class="sd">        .. Warning:: This function must be called after being connected to the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos_result</span> <span class="o">=</span> <span class="n">ImageDetector</span><span class="o">.</span><span class="n">Detector</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">custom_result</span> <span class="o">=</span> <span class="n">ImageDetector</span><span class="o">.</span><span class="n">CustomDetector</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">pos_result</span><span class="p">,</span> <span class="n">custom_result</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DetectorServer.sendResult"><a class="viewcode-back" href="../docs/DetectorServer.html#DetectorServer.DetectorServer.sendResult">[docs]</a>    <span class="k">def</span> <span class="nf">sendResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function sends data to the client.</span>
+
+<span class="sd">        :param result: object you want to send to the client.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;result--&gt;&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="n">result_encoded_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result_encoded_json</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">length</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">result_encoded_json</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

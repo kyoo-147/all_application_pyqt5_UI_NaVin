@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>Camera</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Camera</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">DetectorConnector</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QThread</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+<span class="kn">from</span> <span class="nn">ImageUtils</span> <span class="kn">import</span> <span class="n">draw_area</span>
+
+<span class="n">IMAGE_PATH</span> <span class="o">=</span> <span class="s2">&quot;Images/&quot;</span>
+<span class="sd">&#39;&#39;&#39;IMAGE_PATH : The folder location where the image to be transmitted to the camera is stored.&#39;&#39;&#39;</span>
+<span class="n">DETECTOR_SERVER_IP</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
+<span class="sd">&#39;&#39;&#39;DETECTOR_SERVER_IP : IP Address to connect to DETECTOR SERVER.&#39;&#39;&#39;</span>
+<span class="n">DETECTOR_SERVER_PORT</span> <span class="o">=</span> <span class="mi">7777</span>
+<span class="sd">&#39;&#39;&#39;DETECTOR_SERVER_PORT : Port Number to connect to DETECTOR SERVER&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="VideoThread"><a class="viewcode-back" href="../docs/Camera.html#Camera.VideoThread">[docs]</a><span class="k">class</span> <span class="nc">VideoThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;It is a class that receives an image of a real-time camera,</span>
+<span class="sd">    transmits the image to DETECTOR SERVER, and receives and returns results from DETECTOR SERVER.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">change_pixmap_signal</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;change_pixmap_signal : pyqtSignal variable for </span>
+<span class="sd">    asynchronously calling the processing method of the main function.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_camera_num</span><span class="p">,</span> <span class="n">right_camera_num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A function to initialize the VideoThread class</span>
+
+<span class="sd">        Save the number of the camera to receive the real-time image,</span>
+<span class="sd">        and create classes to connect and communicate with the Object Detection server.</span>
+
+<span class="sd">        :param int left_camera_num: the left camera number used in OpenCV VideoCapture Method.</span>
+<span class="sd">        :param int right_camera_num: the right camera number used in OpenCV VideoCapture Method.</span>
+
+<span class="sd">        .. note:: left_camera_num &amp; right_camera_num must be equal to or greater than -1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Save Camera Numbers used in OpenCV VideoCapture Method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_camera_num</span> <span class="o">=</span> <span class="n">left_camera_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_camera_num</span> <span class="o">=</span> <span class="n">right_camera_num</span>
+
+        <span class="c1"># Create Instance that connect to Server and communicate with server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">DetectorConnector</span><span class="o">.</span><span class="n">Connector</span><span class="p">(</span><span class="n">DETECTOR_SERVER_IP</span><span class="p">,</span> <span class="n">DETECTOR_SERVER_PORT</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VideoThread.setCameraNumber"><a class="viewcode-back" href="../docs/Camera.html#Camera.VideoThread.setCameraNumber">[docs]</a>    <span class="k">def</span> <span class="nf">setCameraNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_num</span><span class="p">,</span> <span class="n">right_num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Setter Method that changes the camera number.</span>
+
+<span class="sd">        :param int left_num: the left camera number used in OpenCV VideoCapture Method.</span>
+<span class="sd">        :param int right_num: the right camera number used in OpenCV VideoCapture Method.</span>
+
+<span class="sd">        .. note:: left_num &amp; right_num must be equal to or greater than -1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_camera_num</span> <span class="o">=</span> <span class="n">left_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_camera_num</span> <span class="o">=</span> <span class="n">right_num</span></div>
+
+<div class="viewcode-block" id="VideoThread.isRun"><a class="viewcode-back" href="../docs/Camera.html#Camera.VideoThread.isRun">[docs]</a>    <span class="k">def</span> <span class="nf">isRun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This Method Returns whether the VideoThread class is working.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_flag</span></div>
+
+<div class="viewcode-block" id="VideoThread.run"><a class="viewcode-back" href="../docs/Camera.html#Camera.VideoThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function reads the image from the camera, sends the image to the server,</span>
+<span class="sd">        receives the object detection result from the server,</span>
+<span class="sd">        and returns the result to the function connected to the pyqtSignal.</span>
+
+<span class="sd">        Until self._run_flag = TRUE, This method will be looping</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># capture from web cam</span>
+        <span class="n">cam_left</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_camera_num</span><span class="p">)</span>
+        <span class="n">cam_right</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_camera_num</span><span class="p">)</span>
+
+        <span class="c1"># Turn on the flag for looping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Looping</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_flag</span><span class="p">:</span>
+
+            <span class="c1"># read real-time image from the two cameras</span>
+            <span class="n">ret_left</span><span class="p">,</span> <span class="n">cv_img_left</span> <span class="o">=</span> <span class="n">cam_left</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">ret_right</span><span class="p">,</span> <span class="n">cv_img_right</span> <span class="o">=</span> <span class="n">cam_right</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+            <span class="c1"># create variables to save the object detection result received from server</span>
+            <span class="n">pos_left</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">pos_right</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">custom_pos_left</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+            <span class="n">custom_pos_right</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+
+            <span class="k">if</span> <span class="n">ret_left</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="c1"># if the left camera can not be approached</span>
+                <span class="n">img_result_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># save real-time image from the left camera</span>
+                <span class="n">img_result_left</span> <span class="o">=</span> <span class="n">cv_img_left</span>
+                <span class="c1"># send the image to server and receive the object detection result</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">processing</span><span class="p">(</span><span class="n">cv_img_left</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">pos_left</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">custom_pos_left</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">ret_right</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="c1"># if the right camera can not be approached</span>
+                <span class="n">img_result_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># save real-time image from the right camera</span>
+                <span class="n">img_result_right</span> <span class="o">=</span> <span class="n">cv_img_right</span>
+                <span class="c1"># send the image to server and receive the object detection result</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">processing</span><span class="p">(</span><span class="n">cv_img_right</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">pos_right</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">custom_pos_right</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Emit Object Detection Result List To the method that connected to pyqt5signal (=Main Processing Method)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">change_pixmap_signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">img_result_left</span><span class="p">,</span> <span class="n">img_result_right</span><span class="p">,</span>
+                                           <span class="n">pos_left</span><span class="p">,</span> <span class="n">pos_right</span><span class="p">,</span> <span class="n">custom_pos_left</span><span class="p">,</span> <span class="n">custom_pos_right</span><span class="p">)</span>
+
+        <span class="c1"># shut down capture system</span>
+        <span class="n">cam_left</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="n">cam_right</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="VideoThread.stop"><a class="viewcode-back" href="../docs/Camera.html#Camera.VideoThread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This Method stops looping by turn off the run flag&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_flag</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="VideoThread.close"><a class="viewcode-back" href="../docs/Camera.html#Camera.VideoThread.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This Method stops looping, disconnect to server and exit thread of VideoThread Instance&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="CameraSetup"><a class="viewcode-back" href="../docs/Camera.html#Camera.CameraSetup">[docs]</a><span class="k">class</span> <span class="nc">CameraSetup</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;It is a class to receive real-time images of the camera</span>
+<span class="sd">    and set the area through clicking on the image screen.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera_num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A function to initialize the CameraSetup class</span>
+
+<span class="sd">        :param int camera_num: the specific camera number used in OpenCV VideoCapture Method.</span>
+
+<span class="sd">        .. note:: camera_num must be equal to or greater than -1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Save the coordinates clicked on the camera&#39;s real-time image screen.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">touch_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Set OpenCV Window Name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">windowName</span> <span class="o">=</span> <span class="s1">&#39;Camera Setup :: Save &amp; Exit Button is KEY Q&#39;</span>
+        <span class="c1"># Flag that determines whether it works or not.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isRun</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Save received camera number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Camera_Number</span> <span class="o">=</span> <span class="n">camera_num</span>
+
+        <span class="c1"># Set Initial Camera Output Image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;camera_no_signal.png&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CameraSetup.addXY_inList"><a class="viewcode-back" href="../docs/Camera.html#Camera.CameraSetup.addXY_inList">[docs]</a>    <span class="k">def</span> <span class="nf">addXY_inList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;It is a function that stores coordinates input through screen clicks.</span>
+
+<span class="sd">        :param int x: The x-coordinate entered through the screen click.</span>
+<span class="sd">        :param int y: The y-coordinate entered through the screen click.</span>
+
+<span class="sd">        .. note:: the x, y must be equal to or greater than zero.</span>
+<span class="sd">        .. note:: the x, y must be equal to or less than the maximum size of the screen.</span>
+
+<span class="sd">        .. warning:: If the number of already stored coordinates is more than 4, the already stored coordinates are removed except for the currently received coordinates.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">touch_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_List</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">touch_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CameraSetup.clear_List"><a class="viewcode-back" href="../docs/Camera.html#Camera.CameraSetup.clear_List">[docs]</a>    <span class="k">def</span> <span class="nf">clear_List</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;It is a function that removes all coordinate values stored in the list (self.touch_list)&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">touch_list</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="CameraSetup.click_event"><a class="viewcode-back" href="../docs/Camera.html#Camera.CameraSetup.click_event">[docs]</a>    <span class="k">def</span> <span class="nf">click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is called when a screen click event occurs.</span>
+<span class="sd">        This function is called when a screen click event occurs,</span>
+<span class="sd">        and receives the coordinates clicked on the screen and stores the coordinates in the list (self.touch_list).</span>
+
+<span class="sd">        :param opencv_event event: Types of events that occurred.</span>
+<span class="sd">        :type opencv_event: The event type defined in OpenCV.</span>
+
+<span class="sd">        :param int x: The x-coordinate entered through the screen click.</span>
+<span class="sd">        :param int y: The y-coordinate entered through the screen click.</span>
+
+<span class="sd">        :param flags: It is a parameter to comply with the form defined in OpenCV.</span>
+<span class="sd">        :param param: It is a parameter to comply with the form defined in OpenCV.</span>
+
+<span class="sd">        .. warning:: The function should not be called except for calls by click events.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if the event type is Left Button Down, save the coordinate</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="n">cv2</span><span class="o">.</span><span class="n">EVENT_LBUTTONDOWN</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;x : &#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="s1">&#39; y : &#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addXY_inList</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CameraSetup.runSetup"><a class="viewcode-back" href="../docs/Camera.html#Camera.CameraSetup.runSetup">[docs]</a>    <span class="k">def</span> <span class="nf">runSetup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function creates a window window for camera setting</span>
+<span class="sd">        and delivers the coordinates clicked on the screen to function click_event.</span>
+
+<span class="sd">        :return: A list of 4 or less coordinates stored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Set Camera Setup Window Name</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">namedWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windowName</span><span class="p">)</span>
+
+        <span class="c1"># Register Event</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">setMouseCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windowName</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">click_event</span><span class="p">)</span>
+
+        <span class="c1"># Set VideoCapture Instance to Receive Real-time Image</span>
+        <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Camera_Number</span><span class="p">)</span>
+
+        <span class="c1"># Looping</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isRun</span><span class="p">:</span>
+            <span class="c1"># Read Image through OpenCV VideoCapture.read()</span>
+            <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+            <span class="c1"># if the camera can not be approached, show NO_SIGNAL_IMAGE on Window</span>
+            <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the camera works well, draw the coordinates that have already been clicked on</span>
+                <span class="c1"># the real-time image together</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">draw_area</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">touch_list</span><span class="p">)</span>
+
+            <span class="c1"># Show the processed picture to the user.</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windowName</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+
+            <span class="c1"># Detects the user&#39;s keyboard input at 0.001 second intervals.</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># If the user presses the Q key, return and terminate the coordinates stored so far.</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;Q&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">isRun</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">destroyWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windowName</span><span class="p">)</span>
+                <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">touch_list</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

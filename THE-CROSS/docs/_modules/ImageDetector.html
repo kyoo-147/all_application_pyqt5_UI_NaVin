@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImageDetector &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>ImageDetector</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ImageDetector</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">tensorflow_hub</span> <span class="k">as</span> <span class="nn">hub</span>
+
+<span class="n">detector</span> <span class="o">=</span> <span class="n">hub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1&quot;</span><span class="p">)</span>
+<span class="n">customDetector</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">saved_model</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;customDetector/saved_model&#39;</span><span class="p">)</span>
+
+<span class="c1"># ================== [ CONFIG ] ================</span>
+
+<span class="n">DETECTION_PRECISION</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">DETECTION_CLASS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">CUSTOM_DETECTOR_PRECISION</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+<span class="n">WHEELCHAIR_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">000</span><span class="p">)</span>
+<span class="n">BABY_CARRIAGE_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">000</span><span class="p">)</span>
+<span class="n">CANE_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">000</span><span class="p">)</span>
+<span class="n">AMBULANCE_COLOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">000</span><span class="p">)</span>
+
+<span class="n">WHEELCHAIR_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Wheelchair&quot;</span>
+<span class="n">BABY_CARRIAGE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Baby_carriage&quot;</span>
+<span class="n">CANE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Cane&quot;</span>
+<span class="n">AMBULANCE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Ambulance&quot;</span>
+
+<span class="n">WHEELCHAIR_CLASS</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">BABY_CARRIAGE_CLASS</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">CANE_CLASS</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">AMBULANCE_CLASS</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Please Check :: LabelMap Index = Object detection Model&#39;s Class Number - 1</span>
+<span class="n">LabelMap</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WHEELCHAIR_TEXT</span><span class="p">,</span> <span class="n">WHEELCHAIR_COLOR</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">BABY_CARRIAGE_TEXT</span><span class="p">,</span> <span class="n">BABY_CARRIAGE_COLOR</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">CANE_TEXT</span><span class="p">,</span> <span class="n">CANE_COLOR</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">AMBULANCE_TEXT</span><span class="p">,</span> <span class="n">AMBULANCE_COLOR</span><span class="p">]]</span>
+
+
+<span class="c1"># ===============================================</span>
+
+<div class="viewcode-block" id="Detector"><a class="viewcode-back" href="../docs/ImageDetector.html#ImageDetector.Detector">[docs]</a><span class="k">def</span> <span class="nf">Detector</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function detects objects in the image using the tensorflow-hub module. And return the detection result.</span>
+
+<span class="sd">    :param 3D-ndarray image: 3D ndarray type data, which has image data.</span>
+
+<span class="sd">    :returns: 2D list [[xmin, ymax, xmax, ymin], [..], ..]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert 3D ndarray image into tensor array ( 3D array = RBG )</span>
+    <span class="n">rgb_tensor</span> <span class="o">=</span> <span class="n">cvImgToRGBTensor</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="c1"># Save object detection result using tensorflow-hub module</span>
+    <span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">num_detections</span> <span class="o">=</span> <span class="n">detector</span><span class="p">(</span><span class="n">rgb_tensor</span><span class="p">)</span>
+
+    <span class="n">pred_labels</span> <span class="o">=</span> <span class="n">classes</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pred_boxes</span> <span class="o">=</span> <span class="n">boxes</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">pred_scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Create variable to return</span>
+    <span class="n">pos_result</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># The pos_result list stores the object location only when the detected object is one of DETECTION_CLASS.</span>
+    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pred_scores</span><span class="p">,</span> <span class="n">pred_boxes</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">DETECTION_PRECISION</span> <span class="ow">or</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DETECTION_CLASS</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">pos_result</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">xmin</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymax</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xmax</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymin</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">pos_result</span></div>
+
+
+<div class="viewcode-block" id="CustomDetector"><a class="viewcode-back" href="../docs/ImageDetector.html#ImageDetector.CustomDetector">[docs]</a><span class="k">def</span> <span class="nf">CustomDetector</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function detects objects in the image using the Transfer learned Object Detection Model.</span>
+<span class="sd">    And return the detection result.</span>
+
+<span class="sd">    :param 3D-ndarray image: 3D ndarray type data, which has image data.</span>
+
+<span class="sd">    :returns: 3D list [ [[xmin, ymax, xmax, ymin], [..], ..], [[xmin, ymax, xmax, ymin], [..], ..], ..]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert 3D ndarray image into tensor array ( 3D array = RBG )</span>
+    <span class="n">rgb_tensor</span> <span class="o">=</span> <span class="n">cvImgToRGBTensor</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="c1"># Save object detection result using customDetector ( which is Transfer learned Object Detection Model. )</span>
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="n">customDetector</span><span class="p">(</span><span class="n">rgb_tensor</span><span class="p">)</span>
+
+    <span class="n">num_detections</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">output_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;num_detections&#39;</span><span class="p">))</span>
+    <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="n">num_detections</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                   <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">output_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;num_detections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_detections</span>
+
+    <span class="c1"># detection_classes should be ints.</span>
+    <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_classes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_classes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">pred_labels</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_classes&#39;</span><span class="p">]</span>
+    <span class="n">pred_boxes</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_boxes&#39;</span><span class="p">]</span>
+    <span class="n">pred_scores</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;detection_scores&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Save the resolution of the image to calculate detected object&#39;s position</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Create variable to return</span>
+    <span class="n">pos_result</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">LabelMap</span><span class="p">)):</span>
+        <span class="n">pos_result</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+    <span class="c1"># The pos_result list stores the object location</span>
+    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pred_scores</span><span class="p">,</span> <span class="n">pred_boxes</span><span class="p">,</span> <span class="n">pred_labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">CUSTOM_DETECTOR_PRECISION</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">y_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymin</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xmin</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymax</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xmax</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
+
+        <span class="n">pos_result</span><span class="p">[</span><span class="n">label</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x_min</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y_max</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x_max</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y_min</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">pos_result</span></div>
+
+
+<div class="viewcode-block" id="cvImgToRGBTensor"><a class="viewcode-back" href="../docs/ImageDetector.html#ImageDetector.cvImgToRGBTensor">[docs]</a><span class="k">def</span> <span class="nf">cvImgToRGBTensor</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function converts 3D-ndarray data into tensor-array data. ( 3D Array = RGB )</span>
+
+<span class="sd">    :param 3D-ndarray image: 3D ndarray type data, which has image data.</span>
+
+<span class="sd">    :returns: tensor-array data ( 3D Array = RGB )</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert img to RGB</span>
+    <span class="n">rgb</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+
+    <span class="c1"># Is optional but i recommend (float conversion and convert img to tensor image)</span>
+    <span class="n">rgb_tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+    <span class="c1"># Add dims to rgb_tensor</span>
+    <span class="n">rgb_tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">rgb_tensor</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rgb_tensor</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

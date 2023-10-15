@@ -1,0 +1,6 @@
+detect:
+  config_path: 'config/detect_config.json'
+  model:
+    model_path: 'models/MobileNetSSD_deploy.caffemodel'
+    config_path: 'config/MobileNetSSD_deploy.prototxt.txt'
+    min_confidence: 0.7

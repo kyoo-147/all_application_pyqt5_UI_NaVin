@@ -1,0 +1,7 @@
+ImageDetector module
+====================
+
+.. automodule:: ImageDetector
+   :members:
+   :undoc-members:
+   :show-inheritance:

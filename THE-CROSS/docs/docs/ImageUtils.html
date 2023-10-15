@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImageUtils module &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="ImageDetector module" href="ImageDetector.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>ImageUtils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/ImageUtils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-ImageUtils">
+<span id="imageutils-module"></span><h1>ImageUtils module<a class="headerlink" href="#module-ImageUtils" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.cvImgToPixmap">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">cvImgToPixmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cvImage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#cvImgToPixmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.cvImgToPixmap" title="Permalink to this definition"></a></dt>
+<dd><p>This function converts images in the form of 3D ndarray into objects in the form of QT-Pixmap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cvImage</strong> (<em>3D-ndarray</em>) – 3D ndarray type data, which has image data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>converted 3D-ndarray cvImage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.cvImgToQtImg">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">cvImgToQtImg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cvImage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">W</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#cvImgToQtImg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.cvImgToQtImg" title="Permalink to this definition"></a></dt>
+<dd><p>This function converts images in the form of 3D ndarray into objects in the form of QTLabel.
+In the process of converting, the image may be resized as needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cvImage</strong> (<em>3D-ndarray</em>) – 3D ndarray type data, which has image data.</p></li>
+<li><p><strong>W</strong> (<em>int</em>) – Width of the image. Resize the image according to this variable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>QTLabel Instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.draw_area">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">draw_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cvImg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dotColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(255,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">255,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#draw_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.draw_area" title="Permalink to this definition"></a></dt>
+<dd><p>This function draws a square on the image using four points. Also, each dot is drawn on the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cvImg</strong> (<em>3D-ndarray</em>) – 3D ndarray type data, which has image data.</p></li>
+<li><p><strong>pos_list</strong> (<em>list</em>) – List of the lower left and upper right points of the square.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pos_list consists of the following list. =&gt; [xmin, ymax, xmax, ymin]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dotColor</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em>) – RGB color of dots.</p></li>
+<li><p><strong>lineColor</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em>) – RGB color of the line of Rectangle.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3D-ndarray img_result ( Rectangle &amp; text drawn )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.draw_detection_boxes">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">draw_detection_boxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#draw_detection_boxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.draw_detection_boxes" title="Permalink to this definition"></a></dt>
+<dd><p>This function draws a square on the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>3D-ndarray</em>) – 3D ndarray type data, which has image data.</p></li>
+<li><p><strong>pos_list</strong> (<em>list</em>) – List of the lower left and upper right points of the square.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pos_list consists of the following list. =&gt; [xmin, ymax, xmax, ymin]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>) – Letters to write on the bottom left of a square.</p></li>
+<li><p><strong>font</strong> (<em>cv2-font-style</em>) – Type of font with letters to write on the bottom left of a square.</p></li>
+<li><p><strong>lineType</strong> (<em>cv2-line-type</em>) – Types of lines to draw squares.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3D-ndarray img_result ( square &amp; text drawn )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.isAnyObjectInRect">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">isAnyObjectInRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rectPos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spotList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxSpot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#isAnyObjectInRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.isAnyObjectInRect" title="Permalink to this definition"></a></dt>
+<dd><p>This function receives the vertex coordinates of the square
+and multiple point coordinates to verify that
+any of the multiple point coordinates received exist within the rectangle area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rectPos</strong> (<em>list</em>) – The rectangle coordinates.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>rectPos must have the form of [[x,y], [x,y], [x,y], [x,y]]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spotList</strong> (<em>list</em>) – List of dots.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>spotList must have the form of [[x,y], [x,y], …] or [[xmin, ymax, xmax, ymin], …]</p>
+</div>
+<p>if spotList have the form of [[xmin, ymax, xmax, ymin], …], boxSpot Must be True
+if spotList have the form of [[x,y], [x,y], …], boxSpot Must be False</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>boxSpot</strong> (<em>boolean</em>) – Whether to use box coordinates.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>box coordinate = [xmin, ymax, xmax, ymin]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.resizeCVIMG">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">resizeCVIMG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cvImage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">W</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#resizeCVIMG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.resizeCVIMG" title="Permalink to this definition"></a></dt>
+<dd><p>This function resizes the image in the form of a 3D-ndarray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cvImage</strong> (<em>3D-ndarray</em>) – 3D ndarray type data, which has image data.</p></li>
+<li><p><strong>W</strong> (<em>int</em>) – Width of the image. Resize the image according to this variable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>resized 3D-ndarray cvImage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ImageUtils.sort_rectPos">
+<span class="sig-prename descclassname"><span class="pre">ImageUtils.</span></span><span class="sig-name descname"><span class="pre">sort_rectPos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rectPos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ImageUtils.html#sort_rectPos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ImageUtils.sort_rectPos" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns the sorted index of the original array according to the sorted array
+if the vertices of the squares are sorted in counterclockwise order. (like numpy argsort())</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rectPos</strong> (<em>list</em>) – The rectangle coordinates.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>rectPos must have the form of [[x,y], [x,y], [x,y], [x,y]]</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sorted index number list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ImageDetector.html" class="btn btn-neutral float-left" title="ImageDetector module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

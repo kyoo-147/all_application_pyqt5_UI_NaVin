@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImageUtils &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>ImageUtils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ImageUtils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QLabel</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtGui</span>
+
+
+<div class="viewcode-block" id="cvImgToQtImg"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.cvImgToQtImg">[docs]</a><span class="k">def</span> <span class="nf">cvImgToQtImg</span><span class="p">(</span><span class="n">cvImage</span><span class="p">,</span> <span class="n">W</span><span class="o">=</span><span class="mi">150</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function converts images in the form of 3D ndarray into objects in the form of QTLabel.</span>
+<span class="sd">    In the process of converting, the image may be resized as needed.</span>
+
+<span class="sd">    :param 3D-ndarray cvImage: 3D ndarray type data, which has image data.</span>
+<span class="sd">    :param int W: Width of the image. Resize the image according to this variable.</span>
+
+<span class="sd">    :returns: QTLabel Instance</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># resize cvImage according to W varibale</span>
+    <span class="n">cvImage</span> <span class="o">=</span> <span class="n">resizeCVIMG</span><span class="p">(</span><span class="n">cvImage</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
+
+    <span class="c1"># convert cvimage (3D-ndarray) to QT Pixmap instance</span>
+    <span class="n">pixmap</span> <span class="o">=</span> <span class="n">cvImgToPixmap</span><span class="p">(</span><span class="n">cvImage</span><span class="p">)</span>
+
+    <span class="c1"># Create new QLabel Instance</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+
+    <span class="c1"># Set pixmap of new created QLABEL to the pixmap converted cvImage</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+
+    <span class="c1"># Set label size as the same as pixmap size</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">pixmap</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">pixmap</span><span class="o">.</span><span class="n">height</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">label</span></div>
+
+
+<div class="viewcode-block" id="resizeCVIMG"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.resizeCVIMG">[docs]</a><span class="k">def</span> <span class="nf">resizeCVIMG</span><span class="p">(</span><span class="n">cvImage</span><span class="p">,</span> <span class="n">W</span><span class="o">=</span><span class="mi">150</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function resizes the image in the form of a 3D-ndarray.</span>
+
+<span class="sd">    :param 3D-ndarray cvImage: 3D ndarray type data, which has image data.</span>
+<span class="sd">    :param int W: Width of the image. Resize the image according to this variable.</span>
+
+<span class="sd">    :returns: resized 3D-ndarray cvImage</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get Ratio of cvImage</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">W</span> <span class="o">/</span> <span class="n">cvImage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Get dimension size</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">cvImage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">))</span>
+
+    <span class="c1"># perform the actual resizing of the image</span>
+    <span class="n">cvImage</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cvImage</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cvImage</span></div>
+
+
+<div class="viewcode-block" id="cvImgToPixmap"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.cvImgToPixmap">[docs]</a><span class="k">def</span> <span class="nf">cvImgToPixmap</span><span class="p">(</span><span class="n">cvImage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function converts images in the form of 3D ndarray into objects in the form of QT-Pixmap.</span>
+
+<span class="sd">    :param 3D-ndarray cvImage: 3D ndarray type data, which has image data.</span>
+
+<span class="sd">    :returns: converted 3D-ndarray cvImage</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert Color of cvImage ( BGR to RBG )</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">cvImage</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+
+    <span class="c1"># Get size of image</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Create QImage instance for extracting QPixmap</span>
+    <span class="n">qImg</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QImage</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QImage</span><span class="o">.</span><span class="n">Format_RGB888</span><span class="p">)</span>
+
+    <span class="c1"># Get Pixmap</span>
+    <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="o">.</span><span class="n">fromImage</span><span class="p">(</span><span class="n">qImg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pixmap</span></div>
+
+
+<div class="viewcode-block" id="draw_detection_boxes"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.draw_detection_boxes">[docs]</a><span class="k">def</span> <span class="nf">draw_detection_boxes</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span>
+                         <span class="n">font</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="n">lineType</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function draws a square on the image.</span>
+
+<span class="sd">    :param 3D-ndarray img: 3D ndarray type data, which has image data.</span>
+<span class="sd">    :param list pos_list: List of the lower left and upper right points of the square.</span>
+<span class="sd">    .. Note:: The pos_list consists of the following list. =&gt; [xmin, ymax, xmax, ymin]</span>
+
+<span class="sd">    :param str text: Letters to write on the bottom left of a square.</span>
+<span class="sd">    :param cv2-font-style font: Type of font with letters to write on the bottom left of a square.</span>
+<span class="sd">    :param cv2-line-type lineType: Types of lines to draw squares.</span>
+
+<span class="sd">    :returns: 3D-ndarray img_result ( square &amp; text drawn )</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">img_result</span> <span class="o">=</span> <span class="n">img</span>
+    
+    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">pos_list</span><span class="p">:</span>
+        <span class="c1"># pos must have the form of [xmin, ymax, xmax, ymin]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># draw square &amp; text on image</span>
+        <span class="n">img_result</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img_result</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span><span class="p">),</span> <span class="n">font</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">lineType</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">img_result</span></div>
+
+
+<div class="viewcode-block" id="draw_area"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.draw_area">[docs]</a><span class="k">def</span> <span class="nf">draw_area</span><span class="p">(</span><span class="n">cvImg</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">dotColor</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">lineColor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;This function draws a square on the image using four points. Also, each dot is drawn on the image.</span>
+
+<span class="sd">    :param 3D-ndarray cvImg: 3D ndarray type data, which has image data.</span>
+<span class="sd">    :param list pos_list: List of the lower left and upper right points of the square.</span>
+<span class="sd">    .. Note:: The pos_list consists of the following list. =&gt; [xmin, ymax, xmax, ymin]</span>
+
+<span class="sd">    :param (int, int, int) dotColor: RGB color of dots.</span>
+<span class="sd">    :param (int, int, int) lineColor: RGB color of the line of Rectangle.</span>
+
+<span class="sd">    :returns: 3D-ndarray img_result ( Rectangle &amp; text drawn )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># draw dots</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos_list</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pos_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">pos_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">cvImg</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dotColor</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># If there are four dots,</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+
+        <span class="c1"># Store an index that counterclockwise aligns the four points.</span>
+        <span class="n">x_arg_sort</span> <span class="o">=</span> <span class="n">sort_rectPos</span><span class="p">(</span><span class="n">pos_list</span><span class="p">)</span>
+
+        <span class="c1"># Draw a Rectangle counterclockwise.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">pos_list</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">pos_list</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span><span class="p">]]</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">cvImg</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">lineColor</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cvImg</span></div>
+
+
+<div class="viewcode-block" id="isAnyObjectInRect"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.isAnyObjectInRect">[docs]</a><span class="k">def</span> <span class="nf">isAnyObjectInRect</span><span class="p">(</span><span class="n">rectPos</span><span class="p">,</span> <span class="n">spotList</span><span class="p">,</span> <span class="n">boxSpot</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function receives the vertex coordinates of the square</span>
+<span class="sd">    and multiple point coordinates to verify that</span>
+<span class="sd">    any of the multiple point coordinates received exist within the rectangle area.</span>
+
+<span class="sd">    :param list rectPos: The rectangle coordinates.</span>
+<span class="sd">    .. Note:: rectPos must have the form of [[x,y], [x,y], [x,y], [x,y]]</span>
+
+<span class="sd">    :param list spotList: List of dots.</span>
+<span class="sd">    .. Note:: spotList must have the form of [[x,y], [x,y], ...] or [[xmin, ymax, xmax, ymin], ...]</span>
+<span class="sd">    if spotList have the form of [[xmin, ymax, xmax, ymin], ...], boxSpot Must be True</span>
+<span class="sd">    if spotList have the form of [[x,y], [x,y], ...], boxSpot Must be False</span>
+
+<span class="sd">    :param boolean boxSpot: Whether to use box coordinates.</span>
+<span class="sd">    .. Note:: box coordinate = [xmin, ymax, xmax, ymin]</span>
+
+<span class="sd">    :returns: boolean</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spotList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># When the vertices of the squares are aligned in counterclockwise order,</span>
+    <span class="c1"># store the sorted index of the original arrangement according to the aligned arrangement. (like numpy argsort())</span>
+    <span class="n">x_arg_sort</span> <span class="o">=</span> <span class="n">sort_rectPos</span><span class="p">(</span><span class="n">rectPos</span><span class="p">)</span>
+
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+    <span class="n">p4</span> <span class="o">=</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+
+    <span class="c1"># High Low Low High</span>
+    <span class="c1"># y = (Ay-By)/(Ax-Bx)*( x - Ax ) + Ay</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spotList</span><span class="p">)):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Convert From [xmin, ymax, xmax, ymin] To [x,y]</span>
+            <span class="k">if</span> <span class="n">boxSpot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="p">[(</span><span class="n">spotList</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">spotList</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">spotList</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">spotList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># linear a &gt; 0</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+                <span class="c1"># linear a &lt; 0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># linear a &gt; 0</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">p3</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">p3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+                <span class="c1"># linear a &lt; 0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">p3</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">p3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">p4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">p4</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="sort_rectPos"><a class="viewcode-back" href="../docs/ImageUtils.html#ImageUtils.sort_rectPos">[docs]</a><span class="k">def</span> <span class="nf">sort_rectPos</span><span class="p">(</span><span class="n">rectPos</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function returns the sorted index of the original array according to the sorted array</span>
+<span class="sd">    if the vertices of the squares are sorted in counterclockwise order. (like numpy argsort())</span>
+
+<span class="sd">    :param list rectPos: The rectangle coordinates.</span>
+<span class="sd">    .. Note:: rectPos must have the form of [[x,y], [x,y], [x,y], [x,y]]</span>
+
+<span class="sd">    :returns: sorted index number list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_arg_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">rectPos</span><span class="p">,</span> <span class="mi">0</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
+
+    <span class="k">if</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]][</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">result1</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> \
+                 <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="n">result1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">result2</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> \
+                  <span class="n">rectPos</span><span class="p">[</span><span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="n">result2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">result1</span><span class="o">*</span><span class="n">result2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">x_arg_sort</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">x_arg_sort</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

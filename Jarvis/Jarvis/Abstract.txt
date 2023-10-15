@@ -1,0 +1,19 @@
+Jarvis stands for Just A Really Very Intelligent System.
+JARVIS is a Voice-Based AI Assistant which is developed in Python Programming Language. 
+It uses Different Technologies To Add New Unique Features. 
+It can Automate Tasks with just One Voice Command. 
+Jarvis is an enterprise platform that provides access to comprehensive aggregate data in real-time and offers customizable reports without impacting the individual practice. 
+Jarvis is designed in a way that it is Practice Management System (PMS) agnostic.
+It is a Desktop Based AI Assistant.
+
+In the jarvis you can  only give voice commands and then it is work for us like our personal assistant.
+in our simple jarvis assistant we gives features like automatically wish according to the current time ,
+open the notepad,command prompmt,play music,set alarm,send email,send message on whats app,play song on you tube.
+there are also fecilities like to know your ip address, jarvis also  give you 2 or 3 sentence summary which word you can search on wikipedia. 
+jarvis also give facility to auto twitt on your twitter account.
+jarvis also track your live location and take automatic screenshots also. 
+using jarvis you can download anyones instagram profile pic.
+we give audiobook function using jarvis.
+jarvis also behave like your applock, using jarvis we can hide or unhide our folders and files.
+
+

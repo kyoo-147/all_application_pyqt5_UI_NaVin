@@ -1,0 +1,7 @@
+ImageUtils module
+=================
+
+.. automodule:: ImageUtils
+   :members:
+   :undoc-members:
+   :show-inheritance:

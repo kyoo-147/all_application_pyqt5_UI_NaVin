@@ -1,0 +1,7 @@
+DetectorConnector module
+========================
+
+.. automodule:: DetectorConnector
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DetectorConnector &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>DetectorConnector</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for DetectorConnector</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+
+<div class="viewcode-block" id="receiveAll"><a class="viewcode-back" href="../docs/DetectorConnector.html#DetectorConnector.receiveAll">[docs]</a><span class="k">def</span> <span class="nf">receiveAll</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function receives and returns all buffers transmitted from the server so far through the socket.</span>
+
+<span class="sd">    The buffer is read through the socket, but the read size is limited.</span>
+<span class="sd">    The size limit is limited by the value stored in the count variable.</span>
+
+<span class="sd">    :param socket.socket sock: A Socket variable for communicating with the server.</span>
+<span class="sd">    :param int count: A variable that stores a limit on the total read size</span>
+
+<span class="sd">    :return buffer: returns all buffers transmitted from the server</span>
+<span class="sd">    :return None: return None if There is no new Buffer</span>
+
+<span class="sd">    :raises socket.timeout: In the process of reading the buffer through the socket, when the time limit is set in the socket and exceeds the time limit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create A buffer variable to save received buffer</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+
+    <span class="c1"># Looping if count &gt;= 0</span>
+    <span class="k">while</span> <span class="n">count</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># receive new buffer</span>
+            <span class="n">newbuf</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+            <span class="c1"># if socket timeout</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># if there is no new buffer</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">newbuf</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># if there is a new buffer, Save and Reduce count variable by the size input.</span>
+        <span class="n">buf</span> <span class="o">+=</span> <span class="n">newbuf</span>
+        <span class="n">count</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">newbuf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">buf</span></div>
+
+
+<div class="viewcode-block" id="Connector"><a class="viewcode-back" href="../docs/DetectorConnector.html#DetectorConnector.Connector">[docs]</a><span class="k">class</span> <span class="nc">Connector</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class for communicating with an object detection server. This class is responsible for</span>
+<span class="sd">    connecting to the server, transmitting images to the server, and receiving and processing results from the server</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A function to initialize the Connector class</span>
+
+<span class="sd">        Save the IP and PORT of the server you want to connect to and try to connect with the server.</span>
+
+<span class="sd">        :param str ip: String type IP address. ex) 127.0.0.1</span>
+<span class="sd">        :param int port: Int type PORT number ex)7777</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isRun</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notReceived_Before</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TCP_SERVER_IP</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TCP_SERVER_PORT</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectCount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectServer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Connector.connectServer"><a class="viewcode-back" href="../docs/DetectorConnector.html#DetectorConnector.Connector.connectServer">[docs]</a>    <span class="k">def</span> <span class="nf">connectServer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function attempts to connect to the server.Create a socket to connect to the server,</span>
+<span class="sd">        and try to connect to the server using the socket that you created. If the connection fails,</span>
+<span class="sd">        try to reconnect a total of 10 times. If the connection fails 10 times in total, exit the program.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Create a socket to connect to the server.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+
+            <span class="c1"># Try to connect with the server.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">TCP_SERVER_IP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCP_SERVER_PORT</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">u</span><span class="s1">&#39;Client socket is connected with Server socket [ TCP_SERVER_IP: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCP_SERVER_IP</span>
+                <span class="o">+</span> <span class="s1">&#39;, TCP_SERVER_PORT: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TCP_SERVER_PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; ]&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connectCount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># print an error message on the console window.</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+            <span class="c1"># Increase the number of Trying to connect to the server.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connectCount</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># If the connection with the server fails 10 times, the program will be terminated.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectCount</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Connect fail </span><span class="si">%d</span><span class="s1"> times. exit program&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectCount</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> times try to connect with server&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectCount</span><span class="p">)</span>
+
+            <span class="c1"># Retry connecting to the server.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connectServer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Connector.processing"><a class="viewcode-back" href="../docs/DetectorConnector.html#DetectorConnector.Connector.processing">[docs]</a>    <span class="k">def</span> <span class="nf">processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function uses a socket to transmit the image and the size of the image to the server,</span>
+<span class="sd">        receives the result data and the size of the result data from the server,</span>
+<span class="sd">        and returns the object detection result.</span>
+
+<span class="sd">        :param ndarray image: 3D ND array containing photo data.</span>
+<span class="sd">        :type ndarray: 3D NdArray form returned by OpenCV VideoCapture.read()</span>
+
+<span class="sd">        .. Note:: image must not be None, image must be 3D ndarray Type</span>
+
+<span class="sd">        :returns: multi dimension list type [people_position_list, custom_object_position_list]</span>
+
+<span class="sd">        .. Note:: peaple_position_list is composed of 1D list ( [xmin, ymax, xmax, ymin] )</span>
+<span class="sd">        .. Note:: custom_object_position_list is composed of 2D list [object-classNum-1, object-classNum-2, ...]</span>
+<span class="sd">        .. Note:: object-class is 1D Array that composed of 1D list ( [xmin, ymax, xmax, ymin] )</span>
+
+<span class="sd">        .. Note:: The structure of the return form is as follows.</span>
+<span class="sd">        .. Note:: [ [[xmin, ymax, xmax, ymin], ...] , [   [[xmin, ymax, xmax, ymin], ..], [..], [..], [..], ...  ] ]</span>
+
+<span class="sd">        .. Warning:: This function must be called after being connected to the server.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Setting image encoding parameter</span>
+            <span class="n">encode_param</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">IMWRITE_JPEG_QUALITY</span><span class="p">),</span> <span class="mi">90</span><span class="p">]</span>
+
+            <span class="c1"># Encoding Image using cv2.imencode function</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">img_encode</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imencode</span><span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">encode_param</span><span class="p">)</span>
+
+            <span class="c1"># Convert encoded image data into numpy array type</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_encode</span><span class="p">)</span>
+
+            <span class="c1"># Encoding data using base64.b64encode function to send string data to server</span>
+            <span class="n">stringData</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="c1"># Get converted into string type data length</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stringData</span><span class="p">))</span>
+
+            <span class="c1"># Send string data and its length to server</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">length</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">stringData</span><span class="p">)</span>
+
+            <span class="c1"># Receive object detection result&#39;s length from Server</span>
+            <span class="n">result_len</span> <span class="o">=</span> <span class="n">receiveAll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">result_len</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="n">result_len</span> <span class="o">=</span> <span class="n">result_len</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Receive object detection result from Server using result length</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">receiveAll</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">result_len</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="c1"># decode received object detection result</span>
+            <span class="n">result_decoded</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Parsing received object detection result using json.loads(str)</span>
+            <span class="n">result_list</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result_decoded</span><span class="p">)</span>
+
+            <span class="c1"># return object detection result</span>
+            <span class="k">return</span> <span class="n">result_list</span>
+
+        <span class="c1"># If a problem occurs during the communication process,</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># print Error Message on console window</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+            <span class="c1"># If it is not terminated by the user ( = means self.isRun is True )</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isRun</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1"># Close socket to try to connect to Server again</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                <span class="c1"># To end the socket safely, use time.sleep(1)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># ReTry to connect to Server</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">connectServer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Connector.disconnect"><a class="viewcode-back" href="../docs/DetectorConnector.html#DetectorConnector.Connector.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is to terminate the connection with the server.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Turn off the flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isRun</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Closing Socket..&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Close Socket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c1"># To end the socket safely, use time.sleep(1)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Closed Socket&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

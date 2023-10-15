@@ -1,0 +1,3 @@
+# YOLO_OpenCv_Tkinter
+使用YOLOv8和OpenCV单间一个Python小程序，显示并预测摄像头画面可以选择是否保存，使用Tkinter写了一个交互GUI。
+过程中学习的OpenCV和Tkinter记录也记了下来。

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DetectorServer module &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageDetector module" href="ImageDetector.html" />
+    <link rel="prev" title="Server module" href="Server.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Server.html">Server module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>DetectorServer module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/DetectorServer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-DetectorServer">
+<span id="detectorserver-module"></span><h1>DetectorServer module<a class="headerlink" href="#module-DetectorServer" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="DetectorServer.DetectorServer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">DetectorServer.</span></span><span class="sig-name descname"><span class="pre">DetectorServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#DetectorServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.DetectorServer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is for opening a server, waiting for client access, and receiving image data from the client,
+detecting an object from that image data, and sending the object detection result to the client
+when the client successfully accesses the server.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DetectorServer.DetectorServer.processing">
+<span class="sig-name descname"><span class="pre">processing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#DetectorServer.processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.DetectorServer.processing" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a function that attempts to detect an object from the input image data,
+stores and returns the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>3D-ndarray</em>) – 3D ndarray type data, which has image data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>multi dimension list type [pos_result, custom_result]</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>pos_result is composed of 1D list ( [xmin, ymax, xmax, ymin] )</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>custom_result is composed of 2D list [object-classNum-1, object-classNum-2, …]</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>object-class is 1D list that composed of 1D list ( [xmin, ymax, xmax, ymin] )</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The structure of the return form is as follows.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>[ [[xmin, ymax, xmax, ymin], …] , [   [[xmin, ymax, xmax, ymin], ..], [..], [..], [..], …  ] ]</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function must be called after being connected to the client.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DetectorServer.DetectorServer.receiveImages">
+<span class="sig-name descname"><span class="pre">receiveImages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#DetectorServer.receiveImages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.DetectorServer.receiveImages" title="Permalink to this definition"></a></dt>
+<dd><p>This function waits for image data transmitted from the client. If the image data arrives successfully,
+object-detection is performed from the image data and the object detection result is sent to the client.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DetectorServer.DetectorServer.sendResult">
+<span class="sig-name descname"><span class="pre">sendResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#DetectorServer.sendResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.DetectorServer.sendResult" title="Permalink to this definition"></a></dt>
+<dd><p>This function sends data to the client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>result</strong> – object you want to send to the client.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DetectorServer.DetectorServer.socketClose">
+<span class="sig-name descname"><span class="pre">socketClose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#DetectorServer.socketClose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.DetectorServer.socketClose" title="Permalink to this definition"></a></dt>
+<dd><p>This function closes the socket of the server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DetectorServer.DetectorServer.socketOpen">
+<span class="sig-name descname"><span class="pre">socketOpen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#DetectorServer.socketOpen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.DetectorServer.socketOpen" title="Permalink to this definition"></a></dt>
+<dd><p>This function opens the socket of the server and waits for the client to access.
+If the client has successfully accessed the server, store the socket of the connected client.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="DetectorServer.receiveAll">
+<span class="sig-prename descclassname"><span class="pre">DetectorServer.</span></span><span class="sig-name descname"><span class="pre">receiveAll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DetectorServer.html#receiveAll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DetectorServer.receiveAll" title="Permalink to this definition"></a></dt>
+<dd><p>This function receives and returns all buffers transmitted from the server so far through the socket.</p>
+<p>The buffer is read through the socket, but the read size is limited.
+The size limit is limited by the value stored in the count variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sock</strong> (<em>socket.socket</em>) – A Socket variable for communicating with the server.</p></li>
+<li><p><strong>count</strong> (<em>int</em>) – A variable that stores a limit on the total read size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return buffer</dt>
+<dd class="field-even"><p>returns all buffers transmitted from the server</p>
+</dd>
+<dt class="field-odd">Return None</dt>
+<dd class="field-odd"><p>return None if There is no new Buffer</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>socket.timeout</strong> – In the process of reading the buffer through the socket, when the time limit is set in the socket and exceeds the time limit</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Server.html" class="btn btn-neutral float-left" title="Server module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ImageDetector.html" class="btn btn-neutral float-right" title="ImageDetector module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

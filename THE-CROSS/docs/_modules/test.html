@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>test &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>test</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for test</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+<span class="kn">import</span> <span class="nn">ImageDetector</span>
+<span class="kn">import</span> <span class="nn">ImageUtils</span>
+
+
+<div class="viewcode-block" id="Test_ImageUtils"><a class="viewcode-back" href="../docs/test.html#test.Test_ImageUtils">[docs]</a><span class="k">class</span> <span class="nc">Test_ImageUtils</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Test_ImageUtils.test_resizeCVIMG"><a class="viewcode-back" href="../docs/test.html#test.Test_ImageUtils.test_resizeCVIMG">[docs]</a>    <span class="k">def</span> <span class="nf">test_resizeCVIMG</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Preparing images for Unit Test</span>
+        <span class="n">test_img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;images/camera_no_signal.png&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Test Method</span>
+        <span class="n">test_img</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">resizeCVIMG</span><span class="p">(</span><span class="n">test_img</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">__</span> <span class="o">=</span> <span class="n">test_img</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Evaluation : width of Resized image must be 150</span>
+        <span class="n">expect</span> <span class="o">=</span> <span class="mi">150</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Test_ImageUtils.test_sort_rectPos"><a class="viewcode-back" href="../docs/test.html#test.Test_ImageUtils.test_sort_rectPos">[docs]</a>    <span class="k">def</span> <span class="nf">test_sort_rectPos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Preparing Spots of Square</span>
+        <span class="n">test_square_spots</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+                             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+                             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">]]</span>
+
+        <span class="c1"># Test Method</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">sort_rectPos</span><span class="p">(</span><span class="n">test_square_spots</span><span class="p">)</span>
+
+        <span class="c1"># Evaluation : Sorted Spots ( = Arrange the square dots counterclockwise )</span>
+        <span class="n">expect</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertListEqual</span><span class="p">(</span><span class="n">expect</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Test_ImageUtils.test_isOneSpotInRect"><a class="viewcode-back" href="../docs/test.html#test.Test_ImageUtils.test_isOneSpotInRect">[docs]</a>    <span class="k">def</span> <span class="nf">test_isOneSpotInRect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Preparing Spots of Square</span>
+        <span class="n">test_square_spots_1</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+
+        <span class="n">test_square_spots_2</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">]]</span>
+
+        <span class="c1"># Preparing Dot Spots</span>
+        <span class="n">test_dots</span> <span class="o">=</span> <span class="p">[[[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">]]]</span>
+
+        <span class="c1"># Test Method</span>
+        <span class="n">result_1_1</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_1</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">result_1_2</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_1</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">result_1_3</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_1</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">result_1_4</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_1</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">result_2_1</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_2</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">result_2_2</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_2</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">result_2_3</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_2</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">result_2_4</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">test_square_spots_2</span><span class="p">,</span> <span class="n">test_dots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Evaluation</span>
+        <span class="n">expect_1_1</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># (50,50) must be in the Rect</span>
+        <span class="n">expect_1_2</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># (30,50) must be in the rect</span>
+        <span class="n">expect_1_3</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># (0, 50) must be on the rect boundary</span>
+        <span class="n">expect_1_4</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># (200, 50) must be out of the rect</span>
+
+        <span class="n">expect_2_1</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># (50,50) must be out of the square</span>
+        <span class="n">expect_2_2</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># (30,50) must be on the square boundary</span>
+        <span class="n">expect_2_3</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># (0,50) must be out of the square</span>
+        <span class="n">expect_2_4</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># (200,50) must be out of the square</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_1_1</span><span class="p">,</span> <span class="n">result_1_1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_1_2</span><span class="p">,</span> <span class="n">result_1_2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_1_3</span><span class="p">,</span> <span class="n">result_1_3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_1_4</span><span class="p">,</span> <span class="n">result_1_4</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_2_1</span><span class="p">,</span> <span class="n">result_2_1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_2_2</span><span class="p">,</span> <span class="n">result_2_2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_2_3</span><span class="p">,</span> <span class="n">result_2_3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect_2_4</span><span class="p">,</span> <span class="n">result_2_4</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Test_Detector"><a class="viewcode-back" href="../docs/test.html#test.Test_Detector">[docs]</a><span class="k">class</span> <span class="nc">Test_Detector</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Test_Detector.test_Detector"><a class="viewcode-back" href="../docs/test.html#test.Test_Detector.test_Detector">[docs]</a>    <span class="k">def</span> <span class="nf">test_Detector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Preparing images for Unit Test</span>
+        <span class="n">testImg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;images/Test/test_detector.png&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Test Method</span>
+        <span class="n">pos_result</span> <span class="o">=</span> <span class="n">ImageDetector</span><span class="o">.</span><span class="n">Detector</span><span class="p">(</span><span class="n">testImg</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos_result</span><span class="p">)</span>
+
+        <span class="c1"># Evaluation : Detector must find 2 people</span>
+        <span class="n">expect</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Test_Detector.test_CustomDetector"><a class="viewcode-back" href="../docs/test.html#test.Test_Detector.test_CustomDetector">[docs]</a>    <span class="k">def</span> <span class="nf">test_CustomDetector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Preparing images for Unit Test</span>
+        <span class="n">testImg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;images/Test/test_custom_detector.jpg&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Test Method</span>
+        <span class="n">pos_result</span> <span class="o">=</span> <span class="n">ImageDetector</span><span class="o">.</span><span class="n">CustomDetector</span><span class="p">(</span><span class="n">testImg</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pos_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Evaluation : Custom Detector must find 1 wheelchair</span>
+        <span class="n">expect</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expect</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

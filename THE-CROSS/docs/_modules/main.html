@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Client.html">Client module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Camera.html">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">THE-CROSS : A Smart Traffic Control System for the protection of</span>
+<span class="sd">the socially disadvantaged and rapid transport of emergency vehicles.</span>
+
+<span class="sd">Copyright (C) 2021 THE-CROSS authors</span>
+<span class="sd"> </span>
+<span class="sd">This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">it under the terms of the GNU General Public License as published by</span>
+<span class="sd">the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">(at your option) any later version.</span>
+<span class="sd"> </span>
+<span class="sd">This program is distributed in the hope that it will be useful,</span>
+<span class="sd">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</span>
+<span class="sd">GNU General Public License for more details.</span>
+<span class="sd"> </span>
+<span class="sd">You should have received a copy of the GNU General Public License</span>
+<span class="sd">along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+<span class="kn">import</span> <span class="nn">Camera</span>
+<span class="kn">import</span> <span class="nn">FileManager</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QFont</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QPushButton</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtGui</span>
+
+<span class="kn">import</span> <span class="nn">ImageUtils</span>
+<span class="kn">from</span> <span class="nn">ImageUtils</span> <span class="kn">import</span> <span class="n">cvImgToQtImg</span><span class="p">,</span> <span class="n">draw_area</span><span class="p">,</span> <span class="n">isAnyObjectInRect</span>
+<span class="kn">from</span> <span class="nn">Camera</span> <span class="kn">import</span> <span class="n">VideoThread</span><span class="p">,</span> <span class="n">CameraSetup</span>
+<span class="kn">from</span> <span class="nn">SirenDetector</span> <span class="kn">import</span> <span class="n">SirenDetector</span>
+
+<span class="c1"># ====================== [ GUI CONFIG ] =========================</span>
+
+<span class="n">CAMERA_W</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">CAMERA_H</span> <span class="o">=</span> <span class="mi">300</span>
+
+<span class="n">IMAGE_PATH</span> <span class="o">=</span> <span class="s2">&quot;Images/&quot;</span>
+
+<span class="n">TIMER_FONT</span> <span class="o">=</span> <span class="s1">&#39;Arial&#39;</span>
+<span class="n">CONFIRM_BUTTON_FONT</span> <span class="o">=</span> <span class="s1">&#39;Arial&#39;</span>
+
+<span class="n">Option_INC_TIME_NORMAL_LABEL_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Time to increase for ORDINARY PEOPLE (natural number)(seconds) : &quot;</span>
+<span class="n">Option_INC_TIME_SPECIAL_LABEL_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Time to increase for THE SOCIALLY DISADVANTAGED (natural number)(seconds) : &quot;</span>
+<span class="n">Option_TIME_CROSSWALK_GREEN_LABEL_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Basic pedestrian signal time (natural number)(seconds) : &quot;</span>
+<span class="n">Option_TIME_CARLANE_GREEN_LABEL_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Basic vehicle signal time (natural number)(seconds) : &quot;</span>
+<span class="n">Option_TIME_CHAGNE_TERM_LABEL_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Yellow traffic light time (natural number)(seconds) : &quot;</span>
+
+<span class="n">BUTTON_CHANGE_CROSSWALK_TIME_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Change to pedestrian signal&quot;</span>
+<span class="n">BUTTON_CHANGE_CARLINE_TIME_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Change to a vehicle signal&quot;</span>
+<span class="n">BUTTON_SETTING_LEFT_CAM_CROSSWALK_TEXT</span> <span class="o">=</span> <span class="s2">&quot;LEFT CAM CROSSWALK area setting&quot;</span>
+<span class="n">BUTTON_SETTING_RIGHT_CAM_CROSSWALK_TEXT</span> <span class="o">=</span> <span class="s2">&quot;RIGHT CAM CROSSWALK area setting&quot;</span>
+<span class="n">BUTTON_SETTING_LEFT_CAM_CARLINE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;LEFT CAM CARLINE area setting&quot;</span>
+<span class="n">BUTTON_SETTING_RIGHT_CAM_CARLINE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;RIGHT CAM CARLINE area setting&quot;</span>
+
+<span class="n">BUTTON_SETTING_SAVE</span> <span class="o">=</span> <span class="s2">&quot;SAVE&quot;</span>
+
+<span class="n">WHEELCHAIR_CLASS</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">BABY_CARRIAGE_CLASS</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">CANE_CLASS</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">AMBULANCE_CLASS</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">WHEELCHAIR_LABEL</span> <span class="o">=</span> <span class="s1">&#39;WHEELCHAIR&#39;</span>
+<span class="n">BABY_CARRIAGE_LABEL</span> <span class="o">=</span> <span class="s1">&#39;BABY_CARRIAGE&#39;</span>
+<span class="n">CANE__LABEL</span> <span class="o">=</span> <span class="s1">&#39;CANE&#39;</span>
+<span class="n">AMBULANCE_LABEL</span> <span class="o">=</span> <span class="s1">&#39;AMBULANCE&#39;</span>
+
+<span class="n">ClassNum_List</span> <span class="o">=</span> <span class="p">[</span><span class="n">WHEELCHAIR_CLASS</span><span class="p">,</span> <span class="n">BABY_CARRIAGE_CLASS</span><span class="p">,</span> <span class="n">CANE_CLASS</span><span class="p">,</span> <span class="n">AMBULANCE_CLASS</span><span class="p">]</span>
+<span class="n">ClassLabel_List</span> <span class="o">=</span> <span class="p">[</span><span class="n">WHEELCHAIR_LABEL</span><span class="p">,</span> <span class="n">BABY_CARRIAGE_LABEL</span><span class="p">,</span> <span class="n">CANE__LABEL</span><span class="p">,</span> <span class="n">AMBULANCE_LABEL</span><span class="p">]</span>
+
+
+<span class="c1"># ===============================================================</span>
+
+
+<div class="viewcode-block" id="Main"><a class="viewcode-back" href="../docs/main.html#main.Main">[docs]</a><span class="k">class</span> <span class="nc">Main</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class is actually a central class for using client programs.</span>
+<span class="sd">    All functions work around this class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A function to initialize the Main class</span>
+<span class="sd">        This function declares all variables and classes required to run a client program.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Ambulance</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Person</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_DisablePerson</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SirenDetector</span> <span class="o">=</span> <span class="n">SirenDetector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isPreparingCamera</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">configManager</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isTimerRun</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timerThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">TimerMethod</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CHANGE_TERM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlaneTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CARLANE_TIME&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalkTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CROSSWALK_TIME&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeIncNormal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;INCREASE_TIME_NORMAL&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeIncSpecial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;INCREASE_TIME_SPECIAL&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Carlane_Button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Carlane_Button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CHANGE_TERM_Input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CARLANE_GREEN_Input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CROSSWALK_GREEN_Input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Crosswalk_Button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Crosswalk_Button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Change_CarTime_Button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Change_CrosswalkTime_Button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_SPECIAL_Input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ConfirmButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimerLabel</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_NORMAL_Input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;:: The CROSS :: Smart Traffic Control System&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_PREPARING_IMG_L</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;camera_preparing.png&quot;</span><span class="p">),</span> <span class="n">CAMERA_W</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_PREPARING_IMG_R</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;camera_preparing.png&quot;</span><span class="p">),</span> <span class="n">CAMERA_W</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG_L</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;camera_no_signal.png&quot;</span><span class="p">),</span> <span class="n">CAMERA_W</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG_R</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;camera_no_signal.png&quot;</span><span class="p">),</span> <span class="n">CAMERA_W</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_GREEN_ON_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;crosswalk_green_on.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_GREEN_OFF_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;crosswalk_green_off.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_RED_ON_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;crosswalk_red_on.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_RED_OFF_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;crosswalk_red_off.png&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">GREEN_ON_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;green_on.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GREEN_OFF_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;green_off.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RED_ON_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;red_on.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RED_OFF_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;red_off.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">YELLOW_ON_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;yellow_on.png&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">YELLOW_OFF_IMG</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">IMAGE_PATH</span> <span class="o">+</span> <span class="s2">&quot;yellow_off.png&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Green</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Green</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GREEN_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Yellow</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Yellow</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">YELLOW_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Red</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Red</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RED_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Green</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Green</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_GREEN_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Red</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Red</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_RED_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraRight</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraRight</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG_R</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLeft</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLeft</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG_L</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Main.initUI"><a class="viewcode-back" href="../docs/main.html#main.Main.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is for GUI activation. It is also a function that actually starts the program.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">UpPanel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">DownPanel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="n">CameraPanel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="n">SignalPanel</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">CrosswalkPanel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">CarLanePanel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="n">OptionPanel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">OptionList</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">ControlPanel</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="n">CameraPanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraLeft</span><span class="p">)</span>
+        <span class="n">CameraPanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CameraRight</span><span class="p">)</span>
+
+        <span class="n">CrosswalkPanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Red</span><span class="p">)</span>
+        <span class="n">CrosswalkPanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Green</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimerLabel</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">QFont</span><span class="p">(</span><span class="n">TIMER_FONT</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimerLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">)</span>
+        <span class="n">CrosswalkPanel</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">CrosswalkPanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TimerLabel</span><span class="p">)</span>
+        <span class="n">CrosswalkPanel</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">CarLanePanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Red</span><span class="p">)</span>
+        <span class="n">CarLanePanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Yellow</span><span class="p">)</span>
+        <span class="n">CarLanePanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Green</span><span class="p">)</span>
+
+        <span class="n">SignalPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">CrosswalkPanel</span><span class="p">)</span>
+        <span class="n">SignalPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">CarLanePanel</span><span class="p">)</span>
+
+        <span class="n">UpPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">CameraPanel</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="n">UpPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">SignalPanel</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="c1"># =======================================================</span>
+        <span class="c1"># ==================== OPTION PANEL =====================</span>
+        <span class="c1"># =======================================================</span>
+
+        <span class="n">Option_INC_TIME_NORMAL</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Option_INC_TIME_NORMAL_LABEL</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">Option_INC_TIME_NORMAL_LABEL</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">Option_INC_TIME_NORMAL_LABEL_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_NORMAL_Input</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_NORMAL_Input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;INCREASE_TIME_NORMAL&#39;</span><span class="p">]))</span>
+        <span class="n">Option_INC_TIME_NORMAL</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">Option_INC_TIME_NORMAL_LABEL</span><span class="p">)</span>
+        <span class="n">Option_INC_TIME_NORMAL</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_NORMAL_Input</span><span class="p">)</span>
+        <span class="n">OptionList</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Option_INC_TIME_NORMAL</span><span class="p">)</span>
+
+        <span class="n">Option_INC_TIME_SPECIAL</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Option_INC_TIME_SPECIAL_LABEL</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">Option_INC_TIME_SPECIAL_LABEL</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">Option_INC_TIME_SPECIAL_LABEL_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_SPECIAL_Input</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_SPECIAL_Input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;INCREASE_TIME_SPECIAL&#39;</span><span class="p">]))</span>
+        <span class="n">Option_INC_TIME_SPECIAL</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">Option_INC_TIME_SPECIAL_LABEL</span><span class="p">)</span>
+        <span class="n">Option_INC_TIME_SPECIAL</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_SPECIAL_Input</span><span class="p">)</span>
+        <span class="n">OptionList</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Option_INC_TIME_SPECIAL</span><span class="p">)</span>
+
+        <span class="n">Option_TIME_CROSSWALK_GREEN</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Option_TIME_CROSSWALK_GREEN_LABEL</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">Option_TIME_CROSSWALK_GREEN_LABEL</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">Option_TIME_CROSSWALK_GREEN_LABEL_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CROSSWALK_GREEN_Input</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CROSSWALK_GREEN_Input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CROSSWALK_TIME&#39;</span><span class="p">]))</span>
+        <span class="n">Option_TIME_CROSSWALK_GREEN</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">Option_TIME_CROSSWALK_GREEN_LABEL</span><span class="p">)</span>
+        <span class="n">Option_TIME_CROSSWALK_GREEN</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CROSSWALK_GREEN_Input</span><span class="p">)</span>
+        <span class="n">OptionList</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Option_TIME_CROSSWALK_GREEN</span><span class="p">)</span>
+
+        <span class="n">Option_TIME_CARLANE_GREEN</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Option_TIME_CARLANE_GREEN_LABEL</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">Option_TIME_CARLANE_GREEN_LABEL</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">Option_TIME_CARLANE_GREEN_LABEL_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CARLANE_GREEN_Input</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CARLANE_GREEN_Input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CARLANE_TIME&#39;</span><span class="p">]))</span>
+        <span class="n">Option_TIME_CARLANE_GREEN</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">Option_TIME_CARLANE_GREEN_LABEL</span><span class="p">)</span>
+        <span class="n">Option_TIME_CARLANE_GREEN</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CARLANE_GREEN_Input</span><span class="p">)</span>
+        <span class="n">OptionList</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Option_TIME_CARLANE_GREEN</span><span class="p">)</span>
+
+        <span class="n">Option_TIME_CHAGNE_TERM</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Option_TIME_CHAGNE_TERM_LABEL</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">Option_TIME_CHAGNE_TERM_LABEL</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">Option_TIME_CHAGNE_TERM_LABEL_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CHANGE_TERM_Input</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CHANGE_TERM_Input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CHANGE_TERM&#39;</span><span class="p">]))</span>
+        <span class="n">Option_TIME_CHAGNE_TERM</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">Option_TIME_CHAGNE_TERM_LABEL</span><span class="p">)</span>
+        <span class="n">Option_TIME_CHAGNE_TERM</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CHANGE_TERM_Input</span><span class="p">)</span>
+        <span class="n">OptionList</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Option_TIME_CHAGNE_TERM</span><span class="p">)</span>
+
+        <span class="c1"># OptionList Attach To OptionPanel</span>
+        <span class="n">OptionPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">OptionList</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+        <span class="c1"># =======================================================</span>
+        <span class="c1"># ==================== CONTROL PANEL ====================</span>
+        <span class="c1"># =======================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Change_CrosswalkTime_Button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_CHANGE_CROSSWALK_TIME_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Change_CarTime_Button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_CHANGE_CARLINE_TIME_TEXT</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Change_CrosswalkTime_Button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Change_CrosswalkTime_Button_Event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Change_CarTime_Button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Change_CarTime_Button_Event</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Crosswalk_Button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_SETTING_LEFT_CAM_CROSSWALK_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Crosswalk_Button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_SETTING_RIGHT_CAM_CROSSWALK_TEXT</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Crosswalk_Button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Crosswalk_Button_Event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Crosswalk_Button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Crosswalk_Button_Event</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Carlane_Button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_SETTING_LEFT_CAM_CARLINE_TEXT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Carlane_Button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_SETTING_RIGHT_CAM_CARLINE_TEXT</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Carlane_Button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Carlane_Button_Event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Carlane_Button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Carlane_Button_Event</span><span class="p">)</span>
+
+        <span class="n">Control_Crosswalk_Panel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Control_Crosswalk_Panel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Change_CarTime_Button</span><span class="p">)</span>
+        <span class="n">Control_Crosswalk_Panel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Change_CrosswalkTime_Button</span><span class="p">)</span>
+
+        <span class="n">Control_Camera_Crosswalk_Panel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Control_Camera_Crosswalk_Panel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Crosswalk_Button</span><span class="p">)</span>
+        <span class="n">Control_Camera_Crosswalk_Panel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Crosswalk_Button</span><span class="p">)</span>
+
+        <span class="n">Control_Camera_Carlane_Panel</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">Control_Camera_Carlane_Panel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Left_Camera_Carlane_Button</span><span class="p">)</span>
+        <span class="n">Control_Camera_Carlane_Panel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Right_Camera_Carlane_Button</span><span class="p">)</span>
+
+        <span class="n">ControlPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Control_Crosswalk_Panel</span><span class="p">)</span>
+        <span class="n">ControlPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Control_Camera_Crosswalk_Panel</span><span class="p">)</span>
+        <span class="n">ControlPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">Control_Camera_Carlane_Panel</span><span class="p">)</span>
+
+        <span class="c1"># =======================================================</span>
+        <span class="c1"># ==================== CONFIRM BUTTON ===================</span>
+        <span class="c1"># =======================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ConfirmButton</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ConfirmButton</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">BUTTON_SETTING_SAVE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ConfirmButton</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">QFont</span><span class="p">(</span><span class="n">CONFIRM_BUTTON_FONT</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ConfirmButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confirmButtonClicked</span><span class="p">)</span>
+        <span class="n">OptionPanel</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ConfirmButton</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">DownPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">OptionPanel</span><span class="p">,</span> <span class="mi">63</span><span class="p">)</span>
+        <span class="n">DownPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">ControlPanel</span><span class="p">,</span> <span class="mi">37</span><span class="p">)</span>
+
+        <span class="n">allPanel</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">allPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">UpPanel</span><span class="p">)</span>
+        <span class="n">allPanel</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">DownPanel</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">allPanel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sizeHint</span><span class="p">())</span>
+
+        <span class="c1"># Set Up Camera</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preparingCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="n">VideoThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;LEFT_CAMERA_NUMBER&#39;</span><span class="p">],</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;RIGHT_CAMERA_NUMBER&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">change_pixmap_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isPreparingCamera</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Set Up Timer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_Timer</span><span class="p">()</span>
+
+        <span class="c1"># Set Up Siren Detector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startSirenDetector</span><span class="p">()</span>
+
+        <span class="c1"># Set Up GUI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.closeEvent"><a class="viewcode-back" href="../docs/main.html#main.Main.closeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a0</span><span class="p">:</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QCloseEvent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is an event function that occurs when the exit button is clicked in the GUI,</span>
+<span class="sd">        allowing the client program to end safely.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_Timer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopSirenDetector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+    <span class="c1"># imgLeft &amp; imgRight must be cvImage</span>
+<div class="viewcode-block" id="Main.processing"><a class="viewcode-back" href="../docs/main.html#main.Main.processing">[docs]</a>    <span class="k">def</span> <span class="nf">processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgLeft</span><span class="p">,</span> <span class="n">imgRight</span><span class="p">,</span> <span class="n">left_pos</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">,</span> <span class="n">custom_left_pos</span><span class="p">,</span> <span class="n">custom_right_pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that receives an image from a camera, receives an object detection result,</span>
+<span class="sd">        and determines whether to adjust the signal or not.</span>
+
+<span class="sd">        :param 3D-ndarray imgLeft: 3D ndarray type variable, which has left image data.</span>
+<span class="sd">        :param 3D-ndarray imgRight: 3D ndarray type variable, which has right image data.</span>
+
+<span class="sd">        :param 2D-list left_pos: A list of coordinates of the detected person in left image.</span>
+<span class="sd">        .. Note:: left_pos must have the form of [[xmin, ymax, xmax, ymin], [..], ..]</span>
+
+<span class="sd">        :param 2D-list right_pos: A list of coordinates of the detected person in right image.</span>
+<span class="sd">        .. Note:: right_pos must have the form of [[xmin, ymax, xmax, ymin], [..], ..]</span>
+
+<span class="sd">        :param 3D-list custom_left_pos: A list of coordinates of the detected objects in left image.</span>
+<span class="sd">        .. Note:: custom_left_pos must have the form of [ [ [xmin, ymax, xmax, ymin], [..], .. ], [..], .. ]</span>
+
+<span class="sd">        :param 3D-list custom_right_pos: A list of coordinates of the detected objects in right image.</span>
+<span class="sd">        .. Note:: custom_right_pos must have the form of [ [ [xmin, ymax, xmax, ymin], [..], .. ], [..], .. ]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isPreparingCamera</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Flags</span>
+        <span class="n">isPersonExist</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isDisablePersonExist</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isAmbulanceExist</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isSiren</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SirenDetector</span><span class="o">.</span><span class="n">isSiren</span><span class="p">()</span>
+
+        <span class="c1"># Unpacking Positions of Objects Detected on Left Camera</span>
+        <span class="n">wheelchair_pos_left</span> <span class="o">=</span> <span class="n">custom_left_pos</span><span class="p">[</span><span class="n">WHEELCHAIR_CLASS</span><span class="p">]</span>
+        <span class="n">baby_carriage_pos_left</span> <span class="o">=</span> <span class="n">custom_left_pos</span><span class="p">[</span><span class="n">BABY_CARRIAGE_CLASS</span><span class="p">]</span>
+        <span class="n">cane_pos_left</span> <span class="o">=</span> <span class="n">custom_left_pos</span><span class="p">[</span><span class="n">CANE_CLASS</span><span class="p">]</span>
+        <span class="n">ambulance_pos_left</span> <span class="o">=</span> <span class="n">custom_left_pos</span><span class="p">[</span><span class="n">AMBULANCE_CLASS</span><span class="p">]</span>
+
+        <span class="c1"># Unpacking Positions of Objects Detected on Right Camera</span>
+        <span class="n">wheelchair_pos_right</span> <span class="o">=</span> <span class="n">custom_right_pos</span><span class="p">[</span><span class="n">WHEELCHAIR_CLASS</span><span class="p">]</span>
+        <span class="n">baby_carriage_pos_right</span> <span class="o">=</span> <span class="n">custom_right_pos</span><span class="p">[</span><span class="n">BABY_CARRIAGE_CLASS</span><span class="p">]</span>
+        <span class="n">cane_pos_right</span> <span class="o">=</span> <span class="n">custom_right_pos</span><span class="p">[</span><span class="n">CANE_CLASS</span><span class="p">]</span>
+        <span class="n">ambulance_pos_right</span> <span class="o">=</span> <span class="n">custom_right_pos</span><span class="p">[</span><span class="n">AMBULANCE_CLASS</span><span class="p">]</span>
+
+        <span class="c1"># Draw Person Detection Box on Left-Camera image</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_pos</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">imgLeft</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">draw_detection_boxes</span><span class="p">(</span><span class="n">imgLeft</span><span class="p">,</span> <span class="n">left_pos</span><span class="p">,</span> <span class="s1">&#39;PERSON&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_pos</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">imgRight</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">draw_detection_boxes</span><span class="p">(</span><span class="n">imgRight</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">,</span> <span class="s1">&#39;PERSON&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Draw Custom Detection Box on Left-Camera image</span>
+        <span class="k">for</span> <span class="n">classNum</span> <span class="ow">in</span> <span class="n">ClassNum_List</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">custom_left_pos</span><span class="p">[</span><span class="n">classNum</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">imgLeft</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">draw_detection_boxes</span><span class="p">(</span>
+                <span class="n">imgLeft</span><span class="p">,</span> <span class="n">custom_left_pos</span><span class="p">[</span><span class="n">classNum</span><span class="p">],</span> <span class="n">ClassLabel_List</span><span class="p">[</span><span class="n">classNum</span><span class="p">])</span>
+
+        <span class="c1"># Draw Custom Detection Box on Right-Camera image</span>
+        <span class="k">for</span> <span class="n">classNum</span> <span class="ow">in</span> <span class="n">ClassNum_List</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">custom_right_pos</span><span class="p">[</span><span class="n">classNum</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">imgRight</span> <span class="o">=</span> <span class="n">ImageUtils</span><span class="o">.</span><span class="n">draw_detection_boxes</span><span class="p">(</span>
+                <span class="n">imgRight</span><span class="p">,</span> <span class="n">custom_right_pos</span><span class="p">[</span><span class="n">classNum</span><span class="p">],</span> <span class="n">ClassLabel_List</span><span class="p">[</span><span class="n">classNum</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgLeft</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">imgLeft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG_L</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">CrossArea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;LEFT_CAMERA_CROSSWALK_POS&#39;</span><span class="p">]</span>
+            <span class="n">CarLaneArea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;LEFT_CAMERA_CARLANE_POS&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">isPersonExist</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span> <span class="n">left_pos</span><span class="p">):</span>
+                <span class="n">isPersonExist</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">isDisablePersonExist</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span> <span class="n">cane_pos_left</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span>
+                                                                                    <span class="n">wheelchair_pos_left</span><span class="p">)</span> <span class="ow">or</span> \
+                        <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span> <span class="n">baby_carriage_pos_left</span><span class="p">):</span>
+                    <span class="n">isDisablePersonExist</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">isAmbulanceExist</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CarLaneArea</span><span class="p">,</span> <span class="n">ambulance_pos_left</span><span class="p">):</span>
+                    <span class="n">isAmbulanceExist</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">imgLeft</span> <span class="o">=</span> <span class="n">draw_area</span><span class="p">(</span><span class="n">imgLeft</span><span class="p">,</span> <span class="n">CrossArea</span><span class="p">)</span>
+            <span class="n">imgLeft</span> <span class="o">=</span> <span class="n">draw_area</span><span class="p">(</span><span class="n">imgLeft</span><span class="p">,</span> <span class="n">CarLaneArea</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">imgLeft</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">imgLeft</span><span class="p">,</span> <span class="n">CAMERA_W</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLeft</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">imgLeft</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgRight</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">imgRight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_NO_SIGNAL_IMG_R</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">CrossArea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;RIGHT_CAMERA_CROSSWALK_POS&#39;</span><span class="p">]</span>
+            <span class="n">CarLaneArea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;RIGHT_CAMERA_CARLANE_POS&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">isPersonExist</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">):</span>
+                <span class="n">isPersonExist</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">isDisablePersonExist</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span> <span class="n">cane_pos_right</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span>
+                                                                                     <span class="n">wheelchair_pos_right</span><span class="p">)</span> <span class="ow">or</span> \
+                        <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CrossArea</span><span class="p">,</span> <span class="n">baby_carriage_pos_right</span><span class="p">):</span>
+                    <span class="n">isDisablePersonExist</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">isAmbulanceExist</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isAnyObjectInRect</span><span class="p">(</span><span class="n">CarLaneArea</span><span class="p">,</span> <span class="n">ambulance_pos_right</span><span class="p">):</span>
+                    <span class="n">isAmbulanceExist</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">imgRight</span> <span class="o">=</span> <span class="n">draw_area</span><span class="p">(</span><span class="n">imgRight</span><span class="p">,</span> <span class="n">CrossArea</span><span class="p">)</span>
+            <span class="n">imgRight</span> <span class="o">=</span> <span class="n">draw_area</span><span class="p">(</span><span class="n">imgRight</span><span class="p">,</span> <span class="n">CarLaneArea</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">imgRight</span> <span class="o">=</span> <span class="n">cvImgToQtImg</span><span class="p">(</span><span class="n">imgRight</span><span class="p">,</span> <span class="n">CAMERA_W</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraRight</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">imgRight</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isSiren</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">isAmbulanceExist</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Ambulance</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Ambulance</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isDisablePersonExist</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_DisablePerson</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="n">isPersonExist</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Person</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="c1"># ============== CONTROL PANEL SIGH CONTROL ================</span>
+
+<div class="viewcode-block" id="Main.crosswalk_TurnRed_On"><a class="viewcode-back" href="../docs/main.html#main.Main.crosswalk_TurnRed_On">[docs]</a>    <span class="k">def</span> <span class="nf">crosswalk_TurnRed_On</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns on the pedestrian red signal in the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Red</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_RED_ON_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.crosswalk_TurnRed_Off"><a class="viewcode-back" href="../docs/main.html#main.Main.crosswalk_TurnRed_Off">[docs]</a>    <span class="k">def</span> <span class="nf">crosswalk_TurnRed_Off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns off the pedestrian red signal in the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Red</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_RED_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.crosswalk_TurnGreen_On"><a class="viewcode-back" href="../docs/main.html#main.Main.crosswalk_TurnGreen_On">[docs]</a>    <span class="k">def</span> <span class="nf">crosswalk_TurnGreen_On</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns on the pedestrian green signal in the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Green</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_GREEN_ON_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.crosswalk_TurnGreen_Off"><a class="viewcode-back" href="../docs/main.html#main.Main.crosswalk_TurnGreen_Off">[docs]</a>    <span class="k">def</span> <span class="nf">crosswalk_TurnGreen_Off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns off the pedestrian green signal in the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Crosswalk_Green</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CROSSWALK_GREEN_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.carlane_TurnRed_On"><a class="viewcode-back" href="../docs/main.html#main.Main.carlane_TurnRed_On">[docs]</a>    <span class="k">def</span> <span class="nf">carlane_TurnRed_On</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns on the GUI&#39;s vehicle red signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Red</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RED_ON_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.carlane_TurnRed_Off"><a class="viewcode-back" href="../docs/main.html#main.Main.carlane_TurnRed_Off">[docs]</a>    <span class="k">def</span> <span class="nf">carlane_TurnRed_Off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns off the GUI&#39;s vehicle red signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Red</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RED_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.carlane_TurnGreen_On"><a class="viewcode-back" href="../docs/main.html#main.Main.carlane_TurnGreen_On">[docs]</a>    <span class="k">def</span> <span class="nf">carlane_TurnGreen_On</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns on the GUI&#39;s vehicle green signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Green</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GREEN_ON_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.carlane_TurnGreen_Off"><a class="viewcode-back" href="../docs/main.html#main.Main.carlane_TurnGreen_Off">[docs]</a>    <span class="k">def</span> <span class="nf">carlane_TurnGreen_Off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns off the GUI&#39;s vehicle green signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Green</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GREEN_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.carlane_TurnYellow_On"><a class="viewcode-back" href="../docs/main.html#main.Main.carlane_TurnYellow_On">[docs]</a>    <span class="k">def</span> <span class="nf">carlane_TurnYellow_On</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns on the GUI&#39;s vehicle yellow signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Yellow</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">YELLOW_ON_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.carlane_TurnYellow_Off"><a class="viewcode-back" href="../docs/main.html#main.Main.carlane_TurnYellow_Off">[docs]</a>    <span class="k">def</span> <span class="nf">carlane_TurnYellow_Off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function turns of the GUI&#39;s vehicle yellow signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CarLane_Yellow</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">YELLOW_OFF_IMG</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+    <span class="c1"># ================ CONTROL PANEL CAMERA Setting ==================</span>
+
+<div class="viewcode-block" id="Main.preparingCamera"><a class="viewcode-back" href="../docs/main.html#main.Main.preparingCamera">[docs]</a>    <span class="k">def</span> <span class="nf">preparingCamera</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function stops the output of two real-time images displayed on the GUI,</span>
+<span class="sd">        allowing the user to adjust the camera.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isPreparingCamera</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraLeft</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_PREPARING_IMG_L</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CameraRight</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAMERA_PREPARING_IMG_R</span><span class="o">.</span><span class="n">pixmap</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Main.stopCamera"><a class="viewcode-back" href="../docs/main.html#main.Main.stopCamera">[docs]</a>    <span class="k">def</span> <span class="nf">stopCamera</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function stops VideoThread instance from delivering real-time images to MainClass,</span>
+<span class="sd">        stops real-time images output on the GUI,</span>
+<span class="sd">        and actually stops the camera.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">isRun</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preparingCamera</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.refreshCamera"><a class="viewcode-back" href="../docs/main.html#main.Main.refreshCamera">[docs]</a>    <span class="k">def</span> <span class="nf">refreshCamera</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that brings back the camera&#39;s set value,</span>
+<span class="sd">        resets the camera, and allows the camera to work again.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preparingCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">setCameraNumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;LEFT_CAMERA_NUMBER&#39;</span><span class="p">],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;RIGHT_CAMERA_NUMBER&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isPreparingCamera</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="c1"># ================= CONTROL PANEL BUTTON EVENTS =====================</span>
+
+<div class="viewcode-block" id="Main.confirmButtonClicked"><a class="viewcode-back" href="../docs/main.html#main.Main.confirmButtonClicked">[docs]</a>    <span class="k">def</span> <span class="nf">confirmButtonClicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function called to store the program settings that the user has changed on the GUI.</span>
+<span class="sd">        This function allows the user&#39;s changed program setting value to be stored in the config.json file on the GUI,</span>
+<span class="sd">        so that the user&#39;s changed program setting value on the GUI</span>
+<span class="sd">        can be applied directly to the currently operating program.</span>
+
+<span class="sd">        .. Note:: It may take up to one cycle of traffic light before the program setting value changed by the user is applied on the GUI. This varies depending on the current traffic light signal status.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># GET TEXTBOX VALUES</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">INCREASE_TIME_NORMAL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_NORMAL_Input</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="n">INCREASE_TIME_SPECIAL</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_INC_TIME_SPECIAL_Input</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="n">CROSSWALK_TIME</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CROSSWALK_GREEN_Input</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="n">CARLANE_TIME</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CARLANE_GREEN_Input</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="n">CHANGE_TERM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Option_TIME_CHANGE_TERM_Input</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># SAVE AT JSON</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;INCREASE_TIME_NORMAL&#39;</span><span class="p">,</span> <span class="n">INCREASE_TIME_NORMAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;INCREASE_TIME_SPECIAL&#39;</span><span class="p">,</span> <span class="n">INCREASE_TIME_SPECIAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;CROSSWALK_TIME&#39;</span><span class="p">,</span> <span class="n">CROSSWALK_TIME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;CARLANE_TIME&#39;</span><span class="p">,</span> <span class="n">CARLANE_TIME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;CHANGE_TERM&#39;</span><span class="p">,</span> <span class="n">CHANGE_TERM</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalkTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CROSSWALK_TIME&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlaneTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CARLANE_TIME&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;CHANGE_TERM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeIncNormal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;INCREASE_TIME_NORMAL&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeIncSpecial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;INCREASE_TIME_SPECIAL&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Main.Change_CrosswalkTime_Button_Event"><a class="viewcode-back" href="../docs/main.html#main.Main.Change_CrosswalkTime_Button_Event">[docs]</a>    <span class="k">def</span> <span class="nf">Change_CrosswalkTime_Button_Event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;It is a function that is called when the user clicks the Change to pedestrian signal button on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crosswalkTime</span></div>
+
+<div class="viewcode-block" id="Main.Change_CarTime_Button_Event"><a class="viewcode-back" href="../docs/main.html#main.Main.Change_CarTime_Button_Event">[docs]</a>    <span class="k">def</span> <span class="nf">Change_CarTime_Button_Event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is a function that is called when the user clicks</span>
+<span class="sd">        the Change to Vehicle Driving Signal button on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startCarlane</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.Left_Camera_Crosswalk_Button_Event"><a class="viewcode-back" href="../docs/main.html#main.Main.Left_Camera_Crosswalk_Button_Event">[docs]</a>    <span class="k">def</span> <span class="nf">Left_Camera_Crosswalk_Button_Event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is an event function that is called when the user clicks</span>
+<span class="sd">        the reset left camera crosswalk area button on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_Timer</span><span class="p">()</span>
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">CameraSetup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;LEFT_CAMERA_NUMBER&#39;</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">setup</span><span class="o">.</span><span class="n">runSetup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;LEFT_CAMERA_CROSSWALK_POS&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refreshCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_Timer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.Right_Camera_Crosswalk_Button_Event"><a class="viewcode-back" href="../docs/main.html#main.Main.Right_Camera_Crosswalk_Button_Event">[docs]</a>    <span class="k">def</span> <span class="nf">Right_Camera_Crosswalk_Button_Event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is an event function that is called when the user clicks</span>
+<span class="sd">        the reset right camera crosswalk area button on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_Timer</span><span class="p">()</span>
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">CameraSetup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;RIGHT_CAMERA_NUMBER&#39;</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">setup</span><span class="o">.</span><span class="n">runSetup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;RIGHT_CAMERA_CROSSWALK_POS&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refreshCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_Timer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.Left_Camera_Carlane_Button_Event"><a class="viewcode-back" href="../docs/main.html#main.Main.Left_Camera_Carlane_Button_Event">[docs]</a>    <span class="k">def</span> <span class="nf">Left_Camera_Carlane_Button_Event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is an event function that is called when the user clicks</span>
+<span class="sd">        the reset left camera vehicle zone button on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_Timer</span><span class="p">()</span>
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">CameraSetup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;LEFT_CAMERA_NUMBER&#39;</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">setup</span><span class="o">.</span><span class="n">runSetup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;LEFT_CAMERA_CARLANE_POS&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refreshCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_Timer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.Right_Camera_Carlane_Button_Event"><a class="viewcode-back" href="../docs/main.html#main.Main.Right_Camera_Carlane_Button_Event">[docs]</a>    <span class="k">def</span> <span class="nf">Right_Camera_Carlane_Button_Event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is an event function that is called when the user clicks</span>
+<span class="sd">        the reset right camera vehicle zone button on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_Timer</span><span class="p">()</span>
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">CameraSetup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getConfig</span><span class="p">()[</span><span class="s1">&#39;RIGHT_CAMERA_NUMBER&#39;</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">setup</span><span class="o">.</span><span class="n">runSetup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setConfig</span><span class="p">(</span><span class="s1">&#39;RIGHT_CAMERA_CARLANE_POS&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refreshCamera</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_Timer</span><span class="p">()</span></div>
+
+    <span class="c1"># ============================= TIMER ===============================</span>
+
+<div class="viewcode-block" id="Main.TimerMethod"><a class="viewcode-back" href="../docs/main.html#main.Main.TimerMethod">[docs]</a>    <span class="k">def</span> <span class="nf">TimerMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function manages the actual traffic light time and outputs signals according to emergencies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isTimerRun</span><span class="p">:</span>
+            <span class="c1"># Initialize</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">startCarlane</span><span class="p">()</span>
+
+            <span class="c1"># Emergency handling part.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Ambulance</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Person</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_DisablePerson</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">changeTimer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Ambulance</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span>
+
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_DisablePerson</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeIncSpecial</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Person</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeIncNormal</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnRed_On</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnGreen_Off</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">-=</span> <span class="mi">1</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">changeTimer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span><span class="p">)</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">startCrosswalk</span><span class="p">()</span>
+
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">startCarlane</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_DisablePerson</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Emergency_Person</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">continue</span>
+
+            <span class="c1"># if timer == 0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnYellow_Off</span><span class="p">()</span>
+                <span class="c1"># When the driving signal is over,</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">startCrosswalk</span><span class="p">()</span>
+
+                <span class="c1"># When the pedestrian signal time is over</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">startCarlane</span><span class="p">()</span>
+
+            <span class="c1"># If the signal time is equal to or less than the yellow signal time,</span>
+            <span class="c1"># the current signal is output as the yellow signal.</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changeTerm</span> <span class="ow">and</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnRed_Off</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnYellow_On</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnGreen_Off</span><span class="p">()</span>
+
+            <span class="c1"># Timer reduction and time output to GUI.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">changeTimer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Close Traffic Signal Timer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnRed_Off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnYellow_Off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnGreen_Off</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnRed_Off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnGreen_Off</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.startCrosswalk"><a class="viewcode-back" href="../docs/main.html#main.Main.startCrosswalk">[docs]</a>    <span class="k">def</span> <span class="nf">startCrosswalk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function actually changes the signal to the vehicle driving time and reflects it in the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnRed_On</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnGreen_Off</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnGreen_On</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnRed_Off</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crosswalkTime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Main.startCarlane"><a class="viewcode-back" href="../docs/main.html#main.Main.startCarlane">[docs]</a>    <span class="k">def</span> <span class="nf">startCarlane</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function actually changes the signal to pedestrian time and reflects it in the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnRed_Off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carlane_TurnGreen_On</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnGreen_Off</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crosswalk_TurnRed_On</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeStack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">carlaneTime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCarlaneTime</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isCrosswalkTime</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Main.stop_Timer"><a class="viewcode-back" href="../docs/main.html#main.Main.stop_Timer">[docs]</a>    <span class="k">def</span> <span class="nf">stop_Timer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that stops the traffic light timer process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isTimerRun</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimerLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Main.start_Timer"><a class="viewcode-back" href="../docs/main.html#main.Main.start_Timer">[docs]</a>    <span class="k">def</span> <span class="nf">start_Timer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that starts the traffic light timer process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timerThread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timerThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">TimerMethod</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isTimerRun</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timerThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.changeTimer"><a class="viewcode-back" href="../docs/main.html#main.Main.changeTimer">[docs]</a>    <span class="k">def</span> <span class="nf">changeTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that changes the traffic light time displayed on the GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TimerLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
+
+    <span class="c1"># ====================  SIREN DETECTOR  ======================</span>
+<div class="viewcode-block" id="Main.startSirenDetector"><a class="viewcode-back" href="../docs/main.html#main.Main.startSirenDetector">[docs]</a>    <span class="k">def</span> <span class="nf">startSirenDetector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that activates the SirenDetector</span>
+<span class="sd">        to detect the siren sound of an emergency vehicle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopSirenDetector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SirenDetector</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Main.stopSirenDetector"><a class="viewcode-back" href="../docs/main.html#main.Main.stopSirenDetector">[docs]</a>    <span class="k">def</span> <span class="nf">stopSirenDetector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function is a function that stops the SirenDetector to detect the siren sound of an emergency vehicle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SirenDetector</span><span class="o">.</span><span class="n">isRun</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SirenDetector</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../docs/main.html#main.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">IP</span><span class="p">,</span> <span class="n">PORT</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function is called from Client.py to run a client program.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Camera</span><span class="o">.</span><span class="n">DETECTOR_SERVER_IP</span> <span class="o">=</span> <span class="n">IP</span>
+    <span class="n">Camera</span><span class="o">.</span><span class="n">DETECTOR_SERVER_PORT</span> <span class="o">=</span> <span class="n">PORT</span>
+
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CUDA_VISIBLE_DEVICES&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-1&quot;</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">Main</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

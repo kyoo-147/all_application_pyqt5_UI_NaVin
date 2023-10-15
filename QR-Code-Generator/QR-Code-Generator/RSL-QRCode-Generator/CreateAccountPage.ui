@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="bgwidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1200</width>
+      <height>800</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget#bgwidget{
+background-color: rgb(255, 255, 255)}
+</string>
+    </property>
+    <widget class="QPushButton" name="createButton">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>670</y>
+       <width>271</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#createButton {
+    border-radius: 20px;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(250, 217, 97, 255), stop:1 rgba(247, 107, 28, 255));
+    font: 75 17pt &quot;Berlin Sans FB&quot;;
+}
+
+QPushButton#createButton:hover {
+
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 	 		rgba(176, 149, 53, 255), stop:1 rgba(173, 74, 0, 255));
+}
+</string>
+     </property>
+     <property name="text">
+      <string>Create</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="passwordTxtInput">
+     <property name="geometry">
+      <rect>
+       <x>830</x>
+       <y>350</y>
+       <width>271</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="usernameTxtInput">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>350</y>
+       <width>271</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>680</x>
+       <y>240</y>
+       <width>241</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 20pt &quot;Berlin Sans FB&quot;; color: rgb(0, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string>Create your account</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>320</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Berlin Sans FB</family>
+       <pointsize>15</pointsize>
+       <weight>9</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 15pt &quot;Berlin Sans FB&quot;; color: rgb(0, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string>Username</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>830</x>
+       <y>320</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 15pt &quot;Berlin Sans FB&quot;; color: rgb(0, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string>Password</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="backButton">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>650</y>
+       <width>201</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#backButton{
+	border-radius: 30px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 			rgba(250, 217, 97, 255), stop:1 rgba(247, 107, 28, 255));
+	font: 75 17pt &quot;Berlin Sans FB&quot;;
+} 
+
+QPushButton#backButton:hover {
+
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(176, 149, 53, 255), stop:1 rgba(173, 74, 0, 255));
+}</string>
+     </property>
+     <property name="text">
+      <string>Back</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="errorLabel">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>610</y>
+       <width>581</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;; color:red;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="recoveryPasswordTxtInput">
+     <property name="geometry">
+      <rect>
+       <x>830</x>
+       <y>500</y>
+       <width>271</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>830</x>
+       <y>470</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 15pt &quot;Berlin Sans FB&quot;; color: rgb(0, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string>Recovery Answer</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>470</y>
+       <width>221</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 15pt &quot;Berlin Sans FB&quot;; color: rgb(0, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string>Select Recovery Phrase</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="recoveryPhraseComboBox">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>500</y>
+       <width>271</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: rgb(255, 255, 255);
+border: 0.5px solid black;  /* Replace 'red' with the desired border color */</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>What is your favourite sports team?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What is your mother's maiden name?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Where was your first holiday location?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What was the name of your first pet?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What was your first car?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What city were you born in?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What is your favorite book?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What is your favorite hobby?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>What is your favourite band?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>When was your highscool graduation?</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>675</x>
+       <y>40</y>
+       <width>241</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>Sprites/icons/user (6).png</pixmap>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="showPasswordCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>830</x>
+       <y>410</y>
+       <width>131</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 75 12pt &quot;Berlin Sans FB&quot;; color: rgb(0, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string>Show password</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>-10</y>
+       <width>411</width>
+       <height>811</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(170, 0, 255);</string>
+     </property>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>-10</x>
+        <y>10</y>
+        <width>471</width>
+        <height>431</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap>QR_CODES/githubWhite.png</pixmap>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="recoverAccountButton_2">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>560</y>
+        <width>201</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton#recoverAccountButton_2 {
+border-radius: 30px;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(250, 217, 97, 255), stop:1 rgba(247, 107, 28, 255));
+    font: 75 17pt &quot;Berlin Sans FB&quot;;
+}
+
+
+QPushButton#recoverAccountButton_2:hover {
+
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 	 		rgba(176, 149, 53, 255), stop:1 rgba(173, 74, 0, 255));
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Recover Account</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="signInButton">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>460</y>
+        <width>201</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton#signInButton {
+    border-radius: 30px;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(250, 217, 97, 255), stop:1 rgba(247, 107, 28, 255));
+    font: 75 17pt &quot;Berlin Sans FB&quot;;
+}
+
+QPushButton#signInButton:hover {
+
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 	 		rgba(176, 149, 53, 255), stop:1 rgba(173, 74, 0, 255));
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Sign In</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_17">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>770</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Berlin Sans FB</family>
+        <pointsize>12</pointsize>
+        <weight>9</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 12pt &quot;Berlin Sans FB&quot;;
+color: rgb(255, 255, 255);
+background-color: transparent;
+
+</string>
+      </property>
+      <property name="text">
+       <string>Created by Billy Bryant</string>
+      </property>
+     </widget>
+    </widget>
+    <zorder>widget</zorder>
+    <zorder>createButton</zorder>
+    <zorder>passwordTxtInput</zorder>
+    <zorder>usernameTxtInput</zorder>
+    <zorder>label_4</zorder>
+    <zorder>label_6</zorder>
+    <zorder>label_7</zorder>
+    <zorder>backButton</zorder>
+    <zorder>errorLabel</zorder>
+    <zorder>recoveryPasswordTxtInput</zorder>
+    <zorder>label_13</zorder>
+    <zorder>label_14</zorder>
+    <zorder>recoveryPhraseComboBox</zorder>
+    <zorder>label_2</zorder>
+    <zorder>showPasswordCheckBox</zorder>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,1 @@
+print('dasfa, dasf, sdfaf,'.split(',')[:-1])

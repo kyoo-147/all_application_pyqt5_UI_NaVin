@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera module &mdash; THE-CROSS 1.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DetectorConnector module" href="DetectorConnector.html" />
+    <link rel="prev" title="Client module" href="Client.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> THE-CROSS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Client.html">Client module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Camera module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorConnector.html">DetectorConnector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SirenDetector.html">SirenDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FileManager.html">FileManager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Server.html">Server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DetectorServer.html">DetectorServer module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageDetector.html">ImageDetector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageUtils.html">ImageUtils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">THE-CROSS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Camera module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/Camera.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-Camera">
+<span id="camera-module"></span><h1>Camera module<a class="headerlink" href="#module-Camera" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Camera.CameraSetup">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Camera.</span></span><span class="sig-name descname"><span class="pre">CameraSetup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#CameraSetup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.CameraSetup" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>It is a class to receive real-time images of the camera
+and set the area through clicking on the image screen.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.CameraSetup.addXY_inList">
+<span class="sig-name descname"><span class="pre">addXY_inList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#CameraSetup.addXY_inList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.CameraSetup.addXY_inList" title="Permalink to this definition"></a></dt>
+<dd><p>It is a function that stores coordinates input through screen clicks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>int</em>) – The x-coordinate entered through the screen click.</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – The y-coordinate entered through the screen click.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the x, y must be equal to or greater than zero.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the x, y must be equal to or less than the maximum size of the screen.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the number of already stored coordinates is more than 4, the already stored coordinates are removed except for the currently received coordinates.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.CameraSetup.clear_List">
+<span class="sig-name descname"><span class="pre">clear_List</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#CameraSetup.clear_List"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.CameraSetup.clear_List" title="Permalink to this definition"></a></dt>
+<dd><p>It is a function that removes all coordinate values stored in the list (self.touch_list)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.CameraSetup.click_event">
+<span class="sig-name descname"><span class="pre">click_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#CameraSetup.click_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.CameraSetup.click_event" title="Permalink to this definition"></a></dt>
+<dd><p>This function is called when a screen click event occurs.
+This function is called when a screen click event occurs,
+and receives the coordinates clicked on the screen and stores the coordinates in the list (self.touch_list).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event</strong> (<em>opencv_event</em>) – Types of events that occurred.</p></li>
+<li><p><strong>x</strong> (<em>int</em>) – The x-coordinate entered through the screen click.</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – The y-coordinate entered through the screen click.</p></li>
+<li><p><strong>flags</strong> – It is a parameter to comply with the form defined in OpenCV.</p></li>
+<li><p><strong>param</strong> – It is a parameter to comply with the form defined in OpenCV.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function should not be called except for calls by click events.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.CameraSetup.runSetup">
+<span class="sig-name descname"><span class="pre">runSetup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#CameraSetup.runSetup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.CameraSetup.runSetup" title="Permalink to this definition"></a></dt>
+<dd><p>This function creates a window window for camera setting
+and delivers the coordinates clicked on the screen to function click_event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of 4 or less coordinates stored.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="Camera.DETECTOR_SERVER_IP">
+<span class="sig-prename descclassname"><span class="pre">Camera.</span></span><span class="sig-name descname"><span class="pre">DETECTOR_SERVER_IP</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'localhost'</span></em><a class="headerlink" href="#Camera.DETECTOR_SERVER_IP" title="Permalink to this definition"></a></dt>
+<dd><p>IP Address to connect to DETECTOR SERVER.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DETECTOR_SERVER_IP</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="Camera.DETECTOR_SERVER_PORT">
+<span class="sig-prename descclassname"><span class="pre">Camera.</span></span><span class="sig-name descname"><span class="pre">DETECTOR_SERVER_PORT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">7777</span></em><a class="headerlink" href="#Camera.DETECTOR_SERVER_PORT" title="Permalink to this definition"></a></dt>
+<dd><p>Port Number to connect to DETECTOR SERVER</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>DETECTOR_SERVER_PORT</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="Camera.IMAGE_PATH">
+<span class="sig-prename descclassname"><span class="pre">Camera.</span></span><span class="sig-name descname"><span class="pre">IMAGE_PATH</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'Images/'</span></em><a class="headerlink" href="#Camera.IMAGE_PATH" title="Permalink to this definition"></a></dt>
+<dd><p>The folder location where the image to be transmitted to the camera is stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>IMAGE_PATH</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Camera.VideoThread">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Camera.</span></span><span class="sig-name descname"><span class="pre">VideoThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_camera_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_camera_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#VideoThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.VideoThread" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QThread</span></code></p>
+<p>It is a class that receives an image of a real-time camera,
+transmits the image to DETECTOR SERVER, and receives and returns results from DETECTOR SERVER.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Camera.VideoThread.change_pixmap_signal">
+<span class="sig-name descname"><span class="pre">change_pixmap_signal</span></span><a class="headerlink" href="#Camera.VideoThread.change_pixmap_signal" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal variable for
+asynchronously calling the processing method of the main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>change_pixmap_signal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.VideoThread.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#VideoThread.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.VideoThread.close" title="Permalink to this definition"></a></dt>
+<dd><p>This Method stops looping, disconnect to server and exit thread of VideoThread Instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.VideoThread.isRun">
+<span class="sig-name descname"><span class="pre">isRun</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#VideoThread.isRun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.VideoThread.isRun" title="Permalink to this definition"></a></dt>
+<dd><p>This Method Returns whether the VideoThread class is working.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.VideoThread.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#VideoThread.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.VideoThread.run" title="Permalink to this definition"></a></dt>
+<dd><p>This function reads the image from the camera, sends the image to the server,
+receives the object detection result from the server,
+and returns the result to the function connected to the pyqtSignal.</p>
+<p>Until self._run_flag = TRUE, This method will be looping</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.VideoThread.setCameraNumber">
+<span class="sig-name descname"><span class="pre">setCameraNumber</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#VideoThread.setCameraNumber"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.VideoThread.setCameraNumber" title="Permalink to this definition"></a></dt>
+<dd><p>Setter Method that changes the camera number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_num</strong> (<em>int</em>) – the left camera number used in OpenCV VideoCapture Method.</p></li>
+<li><p><strong>right_num</strong> (<em>int</em>) – the right camera number used in OpenCV VideoCapture Method.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>left_num &amp; right_num must be equal to or greater than -1.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Camera.VideoThread.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Camera.html#VideoThread.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Camera.VideoThread.stop" title="Permalink to this definition"></a></dt>
+<dd><p>This Method stops looping by turn off the run flag</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Client.html" class="btn btn-neutral float-left" title="Client module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="DetectorConnector.html" class="btn btn-neutral float-right" title="DetectorConnector module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Kim Tae Wook.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

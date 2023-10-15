@@ -1,0 +1,27 @@
+person 0.25
+bench 0.30
+person 0.31
+backpack 0.33
+person 0.39
+person 0.55
+bench 0.57
+handbag 0.60
+potted plant 0.62
+bicycle 0.63
+person 0.64
+bicycle 0.66
+person 0.69
+person 0.72
+person 0.73
+bicycle 0.77
+person 0.79
+person 0.81
+person 0.83
+person 0.84
+person 0.84
+person 0.85
+person 0.85
+person 0.86
+person 0.88
+person 0.89
+

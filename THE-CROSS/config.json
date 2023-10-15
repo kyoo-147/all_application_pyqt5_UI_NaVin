@@ -1,0 +1,81 @@
+{
+	"INCREASE_TIME_NORMAL": 5,
+	"INCREASE_TIME_SPECIAL": 8,
+	"CROSSWALK_TIME": 10,
+	"CARLANE_TIME": 100,
+	"CHANGE_TERM": 5,
+	"LEFT_CAMERA_NUMBER": 0,
+	"RIGHT_CAMERA_NUMBER": 1,
+	"LEFT_CAMERA_CROSSWALK_POS": [
+		[
+			100,
+			300
+		],
+		[
+			100,
+			470
+		],
+		[
+			650,
+			470
+		],
+		[
+			650,
+			300
+		]
+	],
+	"RIGHT_CAMERA_CROSSWALK_POS": [
+		[
+			100,
+			300
+		],
+		[
+			100,
+			470
+		],
+		[
+			650,
+			470
+		],
+		[
+			650,
+			300
+		]
+	],
+	"LEFT_CAMERA_CARLANE_POS": [
+		[
+			100,
+			10
+		],
+		[
+			100,
+			300
+		],
+		[
+			550,
+			300
+		],
+		[
+			550,
+			10
+		]
+	],
+	"RIGHT_CAMERA_CARLANE_POS": [
+		[
+			100,
+			10
+		],
+		[
+			100,
+			300
+		],
+		[
+			550,
+			300
+		],
+		[
+			550,
+			10
+		]
+	]
+}
